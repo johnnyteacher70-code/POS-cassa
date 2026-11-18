@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>LA CHERRY — Onlayn Katalog</title>
+  <meta name="theme-color" content="#831843">
+  <link rel="icon" type="image/svg+xml" href="/brand/mark.svg">
+  <link rel="stylesheet" href="/vendor/inter/index.css">
+  <script src="/api/brand.js"></script>
+  <script type="importmap">{ "imports": { "vue": "/vendor/vue.js" } }</script>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg2: #f8fafc;
+      --text: #1e293b;
+      --hint: #64748b;
+      --link: #4f46e5;
+      --btn: #4f46e5;
+      --btn-text: #ffffff;
+      --gold: #818cf8;
+      --gold-dark: #4338ca;
+      --line: #e2e8f0;
+      --red: #e11d48; --green: #059669;
+      --serif: 'Inter Variable', Inter, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: 'Inter Variable', Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 15px;
+      font-variant-numeric: lining-nums;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; background: var(--bg2); color: var(--text); }
+    [v-cloak] { display: none; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 12px 12px 90px; }
+    .hero { position: relative; }
+    .promo-badge { position: absolute; top: 8px; left: 8px; background: #dc2626; color: #fff; font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 7px; }
+    .big-price .old { font-size: 13px; color: #94a3b8; font-weight: 500; margin-left: 6px; }
+    .promo-note { color: #dc2626; font-weight: 600; }
+    .level-note { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; font-size: 14px; }
+    header { position: sticky; top: 0; z-index: 10; background: linear-gradient(90deg, #831843, #500724); padding: 10px 14px; border-bottom: 1px solid rgba(244,114,182,.35); }
+    header .logo { width: 130px; line-height: 0; flex: 0 0 auto; display: flex; align-items: center; }
+    header .logo svg { width: 100%; height: auto; max-height: 52px; display: block; }
+    header .who { color: #a5b4fc; font-size: 12px; text-align: right; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    header .in { max-width: 720px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+    header h1 { font-size: 18px; margin: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    input, textarea { font: inherit; color: var(--text); background: var(--bg); border: 1px solid rgba(127,127,127,.25); border-radius: 12px; padding: 11px 14px; width: 100%; }
+    textarea { min-height: 70px; }
+    .search { margin-bottom: 12px; }
+    header .lang { border: 1px solid rgba(165,180,252,.55); background: transparent; color: #ffffff; border-radius: 8px; padding: 5px 11px; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .08em; flex: 0 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    @media (min-width: 560px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .card { background: var(--bg); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+    .card .img { aspect-ratio: 1; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 46px; }
+    .card .img { position: relative; }
+    .card .img img { width: 100%; height: 100%; object-fit: cover; }
+    .big-price { font-size: 17px; font-weight: 800; margin-top: 2px; }
+    .big-price small { font-size: 12px; font-weight: 600; color: var(--hint); }
+    .stepper button:disabled { opacity: .35; }
+    .colors { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .colors button { border: 1px solid var(--line); background: var(--bg); color: var(--text); border-radius: 999px; padding: 4px 10px; font: inherit; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all .15s ease; user-select: none; }
+    .colors button:hover { border-color: var(--btn); }
+    .colors button.on { background: var(--btn); color: var(--btn-text); border-color: var(--btn); font-weight: 600; box-shadow: 0 2px 6px rgba(219,39,119,.25); }
+    .colors.big { margin-top: 6px; gap: 6px; }
+    .colors.big button { font-size: 13.5px; padding: 7px 15px; }
+    .c-badge { display: inline-flex; align-items: center; justify-content: center; background: #ffffff; color: var(--btn); font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 6px; margin-left: 3px; min-width: 18px; line-height: 1.2; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    .colors button:not(.on) .c-badge { background: var(--btn); color: #fff; }
+    .sel-color-indicator { font-size: 11.5px; margin-top: 3px; padding: 4px 8px; border-radius: 8px; background: rgba(219,39,119,.08); color: var(--gold-dark); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .sel-color-indicator b { font-weight: 700; color: var(--btn); }
+    .sel-in-cart { font-size: 11px; color: var(--green); font-weight: 600; margin-left: auto; }
+    .cart-color-tag { display: inline-flex; align-items: center; gap: 4px; background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; border-radius: 8px; padding: 3px 9px; font-size: 12.5px; margin: 4px 0 6px; font-weight: 500; }
+    .cart-color-tag b { font-weight: 700; color: #9d174d; }
+    .variants-panel { background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .variant-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; transition: border-color .15s ease; }
+    .variant-row.active { border-color: var(--btn); background: #fff; box-shadow: 0 2px 8px rgba(219,39,119,.1); }
+    .variant-left { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; cursor: pointer; }
+    .variant-left b { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .variant-in-cart { font-size: 11px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 999px; padding: 1px 7px; font-weight: 600; white-space: nowrap; }
+    .variant-stepper { display: flex; align-items: center; gap: 4px; }
+    .variant-stepper button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg2); color: var(--text); font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .variant-stepper button.plus { background: var(--btn); color: #fff; border-color: var(--btn); }
+    .variant-stepper .cnt { min-width: 26px; text-align: center; font-weight: 700; font-size: 14px; }
+    .variant-thumb, .cart-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: var(--bg2); flex-shrink: 0; }
+    .variant-thumb-ph, .cart-thumb-ph { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--line); background: var(--bg2); font-size: 20px; flex-shrink: 0; }
+    .cpill { display: inline-block; margin-left: 6px; padding: 0 8px; border-radius: 999px; background: var(--bg2); border: 1px solid var(--line); font-size: 12px; font-weight: 500; }
+    .box-add { border: 1px dashed var(--line); background: transparent; color: var(--link); border-radius: 10px; padding: 6px 8px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .card .b { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .card .n { font-weight: 600; font-size: 14px; line-height: 1.25; }
+    .card .v { color: var(--hint); font-size: 12px; }
+    .price { font-size: 13px; }
+    .price b { font-size: 14px; }
+    .out { color: var(--red); font-size: 12px; }
+    .btn { border: 0; border-radius: 12px; background: var(--btn); color: var(--btn-text); font: inherit; font-weight: 600; padding: 12px 16px; cursor: pointer; width: 100%; }
+    .btn.sm { padding: 8px 10px; font-size: 13px; border-radius: 10px; }
+    .btn.ghost { background: var(--bg2); color: var(--text); }
+    .btn.red { background: transparent; color: var(--red); border: 1px solid var(--red); }
+    .btn:disabled { opacity: .5; }
+    .seg { display: flex; background: var(--bg2); border-radius: 10px; padding: 2px; }
+    .seg button { flex: 1; border: 0; background: transparent; padding: 6px 4px; border-radius: 8px; font: inherit; font-size: 12px; color: var(--text); }
+    .seg button.on { background: var(--bg); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+    .stepper { display: flex; align-items: center; gap: 6px; }
+    .stepper button { width: 34px; height: 34px; border-radius: 10px; border: 0; background: var(--bg2); color: var(--text); font-size: 18px; }
+    .stepper input { text-align: center; padding: 6px; border-radius: 10px; width: 56px; }
+    nav.tabs { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); display: flex; border-top: 1px solid rgba(0,0,0,.08); padding-bottom: env(safe-area-inset-bottom); z-index: 20; }
+    nav.tabs button { flex: 1; border: 0; background: none; padding: 9px 4px 10px; font: inherit; font-size: 12px; color: var(--hint); position: relative; }
+    nav.tabs button.on { color: var(--btn); font-weight: 600; }
+    nav.tabs .ic { display: block; font-size: 20px; }
+    nav.tabs .cnt { position: absolute; top: 4px; left: 55%; background: var(--red); color: #fff; border-radius: 999px; font-size: 11px; padding: 1px 6px; }
+    .panel { background: var(--bg); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+    .row { display: flex; gap: 10px; align-items: center; }
+    .muted { color: var(--hint); font-size: 13px; }
+    .line { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(127,127,127,.15); }
+    .line:last-child { border-bottom: 0; }
+    .big { font-size: 26px; font-weight: 800; }
+    .neg { color: var(--red); } .pos { color: var(--green); }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--bg2); }
+    .badge.new { background: #fef3c7; color: #b45309; } .badge.confirmed { background: #d1fae5; color: #047857; }
+    .badge.rejected, .badge.cancelled { background: #fee2e2; color: #b91c1c; }
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; }
+    .sub-tabs button { border: 0; background: var(--bg); color: var(--text); padding: 8px 14px; border-radius: 999px; font: inherit; font-size: 14px; white-space: nowrap; }
+    .sub-tabs button.on { background: var(--btn); color: var(--btn-text); }
+    .toast { position: fixed; left: 12px; right: 12px; bottom: 80px; background: #222; color: #fff; padding: 12px 14px; border-radius: 12px; z-index: 50; text-align: center; }
+    .empty { text-align: center; color: var(--hint); padding: 40px 10px; }
+    .chip-cats { display: flex !important; gap: 6px; flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 10px; padding-bottom: 3px; }
+    .chip-cats::-webkit-scrollbar { display: none !important; width: 0; height: 0; }
+    .chip-cats button { flex-shrink: 0 !important; white-space: nowrap !important; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 7px 14px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; user-select: none; }
+    .chip-cats button.on { background: var(--btn); color: var(--btn-text); border-color: var(--btn); font-weight: 700; }
+    /* ---- Dizayn ---- */
+    .link { color: var(--gold-dark); font-weight: 600; text-decoration: none; }
+    .small { font-size: 13px; }
+    .note-box { margin-top: 12px; padding: 12px; border-radius: 12px; background: #f8fafc; border: 1px solid #d3dbe3; font-size: 14px; line-height: 1.45; }
+    .panel { border: 1px solid var(--line); }
+    .panel.muted { font-size: 16px; color: #4338ca; text-align: center; background: linear-gradient(135deg, #eef2ff, #f5f3ff); border-color: #e0e7ff; }
+    .card { border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(20,30,40,.04); }
+    .card .img { background: #edf0f3; }
+    .card .n { font-family: var(--serif); font-size: 17px; font-weight: 700; line-height: 1.15; }
+    .big-price { font-family: var(--serif); font-size: 21px; color: var(--text); }
+    .big-price small { font-family: 'Inter Variable', Inter, sans-serif; color: var(--gold-dark); white-space: nowrap; }
+    .btn { letter-spacing: .2px; }
+    .btn.ghost { background: #e8ecf0; }
+    .chip-cats button { border: 1px solid var(--line); }
+    .chip-cats button.on, .sub-tabs button.on { background: var(--btn); color: var(--btn-text); border-color: var(--btn); }
+    .sub-tabs button { border: 1px solid var(--line); }
+    .seg { background: #e8ecf0; }
+    nav.tabs { border-top: 1px solid var(--line); }
+    nav.tabs button.on { color: var(--gold-dark); }
+    nav.tabs .ic { display: flex; justify-content: center; height: 24px; margin-bottom: 2px; }
+    nav.tabs .ic svg { width: 23px; height: 23px; }
+    nav.tabs .cnt { background: #f43f5e; color: #fff; font-weight: 700; }
+    .big { font-family: var(--serif); font-size: 32px; }
+    .toast { background: #312e81; color: #ffffff; border: 1px solid rgba(165,180,252,.4); }
+    input:focus, textarea:focus { outline: 2px solid #e0e7ff; border-color: var(--gold); }
+    h3 { font-family: var(--serif); font-size: 21px; }
+    /* ---- Kategoriyalar, baho ---- */
+    .chip-cats.brands button { font-size: 12px; padding: 5px 10px; }
+    .card .img, .card .n { cursor: pointer; }
+    .card .meta { color: var(--hint); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rate { color: #b08a2e; font-size: 13px; white-space: nowrap; }
+    .rate span { color: var(--hint); }
+    /* ---- Mahsulot sahifasi ---- */
+    .pd { position: fixed; inset: 0; z-index: 30; background: var(--bg2); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .pd .bar { position: sticky; top: 0; z-index: 2; background: linear-gradient(90deg, #1e1b4b, #312e81); color: #ffffff; display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+    .pd .bar button { border: 0; background: transparent; color: inherit; font-size: 22px; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
+    .pd .bar .t { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pd .in { max-width: 720px; margin: 0 auto; padding: 0 0 110px; }
+    .pd .hero { background: #edf0f3; aspect-ratio: 1; max-height: 62vh; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 80px; overflow: hidden; }
+    .pd .hero img { width: 100%; height: 100%; object-fit: contain; }
+    .pd .sec { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin: 10px 12px 0; }
+    .pd .sec h4 { margin: 0 0 8px; font-family: var(--serif); font-size: 16px; }
+    .pd .head .meta { color: var(--hint); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .pd .head h2 { font-family: var(--serif); font-size: 24px; margin: 4px 0 2px; line-height: 1.2; }
+    .pd .head .vol { color: var(--hint); font-size: 14px; }
+    .pd .head .rate { display: inline-block; margin-top: 8px; font-size: 15px; cursor: pointer; }
+    .pd .desc { white-space: pre-line; line-height: 1.55; font-size: 15px; overflow-wrap: anywhere; }
+    .pd .props .line { font-size: 14px; }
+    .pd .props .line span:first-child { color: var(--hint); }
+    .pd .sum { display: flex; gap: 16px; align-items: center; }
+    .pd .sum .avg { text-align: center; min-width: 86px; }
+    .pd .sum .avg b { font-family: var(--serif); font-size: 36px; display: block; line-height: 1; }
+    .pd .bars { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--hint); }
+    .pd .bars div { display: flex; align-items: center; gap: 6px; }
+    .pd .bars i { flex: 1; height: 6px; border-radius: 3px; background: #e8ecf0; overflow: hidden; display: block; }
+    .pd .bars i em { display: block; height: 100%; background: #b08a2e; }
+    .pd .rv { padding: 12px 0; border-top: 1px solid var(--line); }
+    .pd .rv:first-of-type { border-top: 0; }
+    .pd .rv .who { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+    .pd .rv .who b { font-weight: 600; }
+    .pd .rv .buyer { font-size: 11px; color: var(--green); background: #e7f3ec; border-radius: 999px; padding: 1px 8px; }
+    .pd .rv .txt { margin-top: 4px; white-space: pre-line; line-height: 1.45; overflow-wrap: anywhere; }
+    .star-pick { display: flex; gap: 4px; margin: 4px 0 10px; }
+    .star-pick button { border: 0; background: none; font-size: 32px; line-height: 1; color: #cfd6dd; padding: 0 2px; cursor: pointer; }
+    .star-pick button.on { color: #b08a2e; }
+    .pd .buy { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
+    .pd .buy .in2 { max-width: 720px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
+    .pd .buy .btn { flex: 1; }
+    /* Katta ekran: rasm chapda (yopishqoq), ma'lumot o'ngda */
+    @media (min-width: 860px) {
+      .pd .in { max-width: 1120px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: start; padding: 16px 16px 110px; }
+      .pd .hero { grid-column: 1; grid-row: 1 / span 20; position: sticky; top: 72px; border-radius: 18px; max-height: none; border: 1px solid var(--line); }
+      .pd .sec { grid-column: 2; margin: 0 0 10px 8px; }
+      .pd .buy .in2 { max-width: 1120px; justify-content: flex-end; }
+      .pd .buy .btn { flex: 0 0 360px; }
+    }
+    .card { border-radius: 16px; overflow: hidden; }
+    .panel { border-radius: 16px; }
+    .btn { border-radius: 12px; }
+    .btn:not(.ghost) { background: linear-gradient(135deg, #db2777, #be185d); }
+  </style>
+</head>
+<body>
+<div id="app" v-cloak>
+  <header><div class="in">
+    <span class="logo" v-html="logoH"></span>
+    <span class="who">{{me && me.client ? me.client.name : ''}}</span>
+    <button class="lang" @click="toggleLang">{{ (i18n.lang || '').toUpperCase() }}</button>
+  </div></header>
+
+  <div class="wrap">
+    <!-- KATALOG -->
+    <template v-if="tab==='catalog'">
+      <div class="panel muted" v-if="catalog.welcome">{{ $t(catalog.welcome) }}</div>
+      <div class="panel level-note" v-if="catalog.price_level">💼 {{ $t('Sizning narxlaringiz') }}: <b>{{ $t(catalog.price_level) }}</b></div>
+      <input class="search" v-model="q" :placeholder="$t('🔍 Mahsulot nomi, kategoriya, brend...')">
+      <div class="chip-cats" v-if="categories.length">
+        <button :class="{on: category===''}" @click="category=''; brand=''">{{ $t('Hammasi') }}</button>
+        <button v-for="c in categories" :key="c" :class="{on: category===c}" @click="category=c; brand=''">{{ $t(c) }}</button>
+      </div>
+      <div class="chip-cats brands" v-if="audiences.length">
+        <button :class="{on: audience===''}" @click="audience=''">{{ $t('Hamma uchun') }}</button>
+        <button v-for="a in audiences" :key="a" :class="{on: audience===a}" @click="audience=a">{{ $t(AUDIENCE[a]) }}</button>
+      </div>
+      <div class="chip-cats brands" v-if="brands.length > 1">
+        <button :class="{on: brand===''}" @click="brand=''">{{ $t('Barcha brendlar') }}</button>
+        <button v-for="b in brands" :key="b" :class="{on: brand===b}" @click="brand=b">{{b}}</button>
+      </div>
+      <div class="grid">
+        <div class="card" v-for="p in filtered" :key="p.id">
+          <div class="img" @click="openProduct(p)">
+            <img v-if="p.image" :src="p.image" loading="lazy" decoding="async" :alt="p.name" @error="$event.target.replaceWith('📦')"><span v-else>📦</span>
+            <span class="promo-badge" v-if="maxPromo(p)">−{{maxPromo(p)}}%</span>
+          </div>
+          <div class="b">
+            <div class="meta" v-if="p.brand || p.category">{{[p.category && $t(p.category), p.brand].filter(Boolean).join(' · ')}}</div>
+            <div class="n" @click="openProduct(p)">{{p.name}}<span class="v" v-if="p.volume || p.size"> · {{[p.volume, p.size].filter(Boolean).join(' · ')}}</span></div>
+            <div class="rate" v-if="p.reviews">★ {{p.rating}} <span>({{p.reviews}})</span></div>
+            <div class="big-price">{{money(unitPrice(p))}} <small>{{ $t('so\'m') }} / {{ sel(p).unit==='dona' ? uLabel(p) : pName(p) }}</small>
+              <s class="old" v-if="oldPrice(p)">{{money(oldPrice(p))}}</s></div>
+            <div class="v promo-note" v-if="promoNote(p)">🏷 {{promoNote(p)}}</div>
+            <div class="v" v-if="p.box_qty>1">1 {{pName(p)}} = {{p.box_qty}} {{uLabel(p)}} · {{money(p.box_price)}}</div>
+            <div class="colors" v-if="p.colors && p.colors.length">
+              <span class="small muted" style="font-size:11.5px;display:block;width:100%;margin-bottom:2px">✨ {{ $t('Assortiment') }}:</span>
+              <button type="button" v-for="c in p.colors" :key="c" :class="{on: sel(p).color===c}" @click="selectColor(p, c)">
+                <span v-if="sel(p).color===c">✓ </span>{{c}}
+                <span v-if="colorInCart(p, c)" class="c-badge">{{colorInCart(p, c)}}</span>
+              </button>
+            </div>
+            <div v-if="sel(p).color" class="sel-color-indicator">
+              <span>{{ $t('Tanlandi') }}:</span> <b>{{sel(p).color}}</b>
+              <span v-if="colorInCart(p, sel(p).color)" class="sel-in-cart">✓ {{ $t('Savatda') }}: {{colorInCart(p, sel(p).color)}} ta</span>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:6px">
+              <div class="seg" v-if="unitMode==='both' && p.box_qty>1">
+                <button :class="{on: sel(p).unit==='dona'}" @click="setUnit(p,'dona')">{{uLabel(p)}}</button>
+                <button :class="{on: sel(p).unit==='karobka'}" @click="setUnit(p,'karobka')">{{pName(p)}}</button>
+              </div>
+              <div class="stepper">
+                <button @click="sel(p).qty = Math.max(1, sel(p).qty-1)">−</button>
+                <input type="number" :inputmode="isFrac(p) ? 'decimal' : 'numeric'" min="0" :step="isFrac(p) ? 'any' : 1" v-model.number="sel(p).qty">
+                <button @click="sel(p).qty++">+</button>
+              </div>
+              <button class="box-add" v-if="sel(p).unit==='dona' && p.box_qty>1" @click="addBox(p)">+ 1 {{pName(p)}} ({{p.box_qty}} {{uLabel(p)}})</button>
+              <button class="btn sm" @click="addToCart(p)">
+                🛒 {{ $t('Savatga') }} <span v-if="sel(p).color">({{sel(p).color}})</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="empty" v-if="!filtered.length">{{ $t('Hech narsa topilmadi') }}</div>
+    </template>
+
+    <!-- SAVAT -->
+    <template v-if="tab==='cart'">
+      <div class="panel" v-if="cart.length">
+        <div class="line" v-for="(c,i) in cart" :key="i" style="align-items:flex-start;gap:10px">
+          <img v-if="c.image" :src="c.image" class="cart-thumb" :alt="c.name">
+          <span v-else class="cart-thumb-ph">📦</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:15px">{{c.name}}</div>
+            <div v-if="c.color" class="cart-color-tag">
+              ✨ {{ $t('Variant / Rang') }}: <b>{{c.color}}</b>
+            </div>
+            <div class="muted">{{c.unit==='karobka' ? (c.pack_label || $t('karobka')) + ' (' + c.box_qty + ' ' + (c.unit_label || $t('dona')) + ')' : (c.unit_label || $t('dona'))}} · {{money(cPrice(c))}}<span v-if="cPrice(c) < (c.base ?? c.price)" class="promo-note"> (−{{Math.round((1 - cPrice(c) / c.base) * 100)}}%)</span></div>
+            <div class="stepper" style="margin-top:6px">
+              <button @click="c.qty>1 ? c.qty-- : cart.splice(i,1)">−</button>
+              <input type="number" :inputmode="c.frac ? 'decimal' : 'numeric'" min="0" :step="c.frac ? 'any' : 1" v-model.number="c.qty">
+              <button @click="c.qty++">+</button>
+              <button @click="cart.splice(i,1)" style="margin-left:auto">🗑</button>
+            </div>
+          </div>
+          <b style="white-space:nowrap">{{money(Math.round(c.qty * cPrice(c)))}}</b>
+        </div>
+        <div class="line"><b>{{ $t('Jami') }}</b><b style="font-size:18px">{{money(cartTotal)}} {{ $t('so\'m') }}</b></div>
+      </div>
+      <div class="empty" v-else>{{ $t('Savat bo\'sh') }}</div>
+      <template v-if="cart.length">
+        <div v-if="!me || !me.client" class="panel" style="margin-bottom:10px">
+          <div style="font-weight:600;margin-bottom:6px">{{ $t('Buyurtmachi ma\'lumotlari') }}:</div>
+          <input v-model="guest.name" :placeholder="$t('Ismingiz')" style="margin-bottom:6px">
+          <input :value="guest.phone" @input="guest.phone = fixPhone($event.target.value); $event.target.value = guest.phone" inputmode="tel" autocomplete="tel" :placeholder="$t('Telefon raqamingiz')" style="margin-bottom:6px">
+        </div>
+        <textarea v-model="note" :placeholder="$t('Izoh (yetkazish manzili, vaqt...)')" style="margin-bottom:10px"></textarea>
+        <button class="btn" :disabled="sending" @click="checkout">{{ $t('Buyurtma berish') }}</button>
+        <p class="muted" style="text-align:center">{{ $t('Buyurtmadan keyin menejer siz bilan bog\'lanib tasdiqlaydi') }}.</p>
+      </template>
+    </template>
+
+    <!-- HISOBIM -->
+    <template v-if="tab==='account'">
+      <template v-if="!me || !me.client">
+        <div class="panel">
+          <h3 style="margin-top:0;font-size:18px;text-align:center">📱 {{ $t('Kirish / Ro\'yxatdan o\'tish') }}</h3>
+          <p class="muted small" style="text-align:center;margin-top:-4px;margin-bottom:14px">
+            {{ $t('Telefon raqamingizni kiriting va bir zumda hisobingizga kiring') }}
+          </p>
+
+          <label class="muted bold" style="font-size:13px">{{ $t('Telefon raqamingiz') }} *</label>
+          <input :value="auth.phone" @input="auth.phone = fixPhone($event.target.value); $event.target.value = auth.phone" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67" style="margin:6px 0 12px;font-size:16px;font-weight:600" @keydown.enter="doLogin">
+
+          <div v-if="authMode==='register'">
+            <label class="muted bold" style="font-size:13px">{{ $t('Ismingiz (ixtiyoriy)') }}</label>
+            <input v-model="auth.contact_name" :placeholder="$t('Masalan: Madina')" style="margin:6px 0 12px" @keydown.enter="doLogin">
+          </div>
+
+          <button class="btn" :disabled="sending" @click="doLogin" style="font-size:15px;padding:13px">
+            🚀 {{ $t('Kirish / Davom etish') }}
+          </button>
+
+          <div style="display:flex;justify-content:center;margin-top:12px">
+            <button type="button" class="btn ghost sm" style="width:auto;font-size:12.5px" @click="authMode = authMode==='login' ? 'register' : 'login'">
+              {{ authMode==='login' ? $t('+ Ismni kiritish (yangi xaridor)') : $t('Faqat raqam bilan kirish') }}
+            </button>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="me && me.client && (me.client.needs_profile || editProfile)">
+        <div class="panel">
+          <h3 style="margin-top:0">{{me.client.needs_profile ? $t("Ro'yxatdan o'tish — ma'lumotlaringiz") : $t("Mening ma'lumotlarim")}}</h3>
+          <div class="seg" style="margin-bottom:12px">
+            <button :class="{on: prof.type==='b2b'}" @click="prof.type='b2b'">{{ $t('Kompaniya (B2B)') }}</button>
+            <button :class="{on: prof.type==='b2c'}" @click="prof.type='b2c'">{{ $t('Jismoniy shaxs') }}</button>
+          </div>
+          <template v-if="prof.type==='b2b'">
+            <label class="muted">{{ $t('Kompaniya nomi') }} *</label>
+            <input v-model="prof.company_name" placeholder='Masalan: "Parfum Market" MChJ' style="margin:4px 0 10px">
+            <label class="muted">{{ $t('INN') }}</label>
+            <input v-model="prof.inn" inputmode="numeric" maxlength="14" :placeholder="$t('9 raqam')" style="margin:4px 0 10px">
+          </template>
+          <label class="muted">{{prof.type==='b2b' ? $t("Mas'ul shaxs (ism familiya) *") : $t('Ism familiya *')}}</label>
+          <input v-model="prof.contact_name" style="margin:4px 0 10px">
+          <label class="muted">{{ $t('Manzil') }}</label>
+          <input v-model="prof.address" :placeholder="$t('Shahar, tuman')" style="margin:4px 0 10px">
+          <div class="muted" style="margin-bottom:10px">{{ $t('Telefon') }}: {{me.client.phone}}</div>
+          <button class="btn" :disabled="sending" @click="saveProfile">{{ $t('Saqlash') }}</button>
+          <button class="btn ghost" style="margin-top:8px" v-if="!me.client.needs_profile" @click="editProfile=false">{{ $t('Bekor') }}</button>
+        </div>
+      </template>
+      <template v-else-if="history">
+        <div class="panel">
+          <div class="row"><div class="muted" style="flex:1">{{history.client.name}}</div>
+            <button v-if="me.client.self_registered" class="btn sm ghost" style="width:auto" @click="startEdit">✎ {{ $t('Ma\'lumotlarim') }}</button>
+            <button class="btn sm ghost" style="width:auto;margin-left:6px" @click="logout">{{ $t('Chiqish') }}</button></div>
+          <div style="margin-top:8px"><a href="" class="link small" @click.prevent="pwForm.open = !pwForm.open">🔑 {{ me.client.has_password ? $t("Parolni o'zgartirish") : $t('Sayt uchun parol o\'rnatish') }}</a></div>
+          <div v-if="pwForm.open" class="note-box" style="margin-top:8px">
+            <label class="muted">{{ $t('Yangi parol') }} <span>({{ $t('kamida 4 belgi') }})</span></label>
+            <input v-model="pwForm.p1" type="password" autocomplete="new-password" style="margin:4px 0 8px">
+            <label class="muted">{{ $t('Yana bir marta') }}</label>
+            <input v-model="pwForm.p2" type="password" autocomplete="new-password" style="margin:4px 0 10px" @keydown.enter="changePassword">
+            <button class="btn" :disabled="sending" @click="changePassword">{{ $t('Saqlash') }}</button>
+          </div>
+          <div class="big" :class="history.client.balance<0 ? 'neg' : history.client.balance>0 ? 'pos' : ''">{{money(history.client.balance)}} {{ $t('so\'m') }}</div>
+          <div class="muted">{{history.client.balance<0 ? $t('Sizning qarzingiz') : history.client.balance>0 ? $t('Sizning avansingiz (oldindan to\'lov)') : $t("Qarz yo'q")}}</div>
+        </div>
+        <div class="sub-tabs">
+          <button :class="{on: accTab==='orders'}" @click="accTab='orders'">{{ $t('Buyurtmalar') }}</button>
+          <button :class="{on: accTab==='sales'}" @click="accTab='sales'">{{ $t('Xaridlar') }}</button>
+          <button :class="{on: accTab==='payments'}" @click="accTab='payments'">{{ $t('To\'lovlar') }}</button>
+        </div>
+        <template v-if="accTab==='orders'">
+          <div class="panel" v-for="o in history.orders" :key="o.id">
+            <div class="row"><b style="flex:1">#{{o.id}} · {{dt(o.created_at)}}</b><span class="badge" :class="o.status">{{ORDER[o.status]}}</span></div>
+            <div class="muted" v-for="i in o.items" :key="i.name+i.unit+(i.color||'')">{{i.name}}{{i.color ? ' · ' + i.color : ''}} — {{i.qty}} {{i.unit}} = {{money(i.total)}}</div>
+            <div class="row" style="margin-top:6px"><b style="flex:1">{{money(o.total)}} {{ $t('so\'m') }}</b>
+              <button v-if="o.status==='new'" class="btn sm red" style="width:auto" @click="cancelOrder(o)">{{ $t('Bekor qilish') }}</button></div>
+            <div class="muted" v-if="o.admin_note && o.status!=='new'">{{o.admin_note}}</div>
+          </div>
+          <div class="empty" v-if="!history.orders.length">{{ $t('Buyurtmalar yo\'q') }}</div>
+        </template>
+        <template v-if="accTab==='sales'">
+          <div class="panel" v-for="s in history.sales" :key="s.id">
+            <div class="row"><b style="flex:1">{{s.number}} · {{dt(s.date)}}</b>
+              <span class="badge" :class="s.paid_amount>=s.total ? 'confirmed' : 'rejected'">{{s.paid_amount>=s.total ? $t("To'langan") : $t('Qarz: ')+money(s.total-s.paid_amount)}}</span></div>
+            <div class="muted" v-for="i in s.items" :key="i.name+i.unit+(i.color||'')">{{i.name}}{{i.color ? ' · ' + i.color : ''}} — {{i.qty}} {{i.unit}} = {{money(i.total)}}</div>
+            <div style="margin-top:6px"><b>{{money(s.total)}} {{ $t('so\'m') }}</b> <span class="muted" v-if="s.due_date && s.paid_amount<s.total">· {{ $t('muddat') }} {{dt(s.due_date,false)}}</span></div>
+          </div>
+          <div class="empty" v-if="!history.sales.length">{{ $t('Xaridlar yo\'q') }}</div>
+        </template>
+        <template v-if="accTab==='payments'">
+          <div class="panel">
+            <div class="line" v-for="p in history.payments" :key="p.id">
+              <div><div>{{p.direction==='in' ? $t("To'lov") : $t('Qaytarildi')}} · {{METHODS[p.method]}}</div><div class="muted">{{dt(p.date)}}{{p.sale_number ? ' · '+p.sale_number : ''}}</div></div>
+              <b :class="p.direction==='in' ? 'pos' : 'neg'">{{money(p.amount)}}</b>
+            </div>
+            <div class="empty" v-if="!history.payments.length">{{ $t('To\'lovlar yo\'q') }}</div>
+          </div>
+        </template>
+      </template>
+    </template>
+  </div>
+
+  <!-- MAHSULOT SAHIFASI -->
+  <div class="pd" v-if="detail" ref="pdEl">
+    <div class="bar">
+      <button @click="closeProduct" :aria-label="$t('Orqaga')">←</button>
+      <div class="t">{{detail.name}}</div>
+    </div>
+    <div class="in">
+      <div class="hero"><img v-if="detail.image" :src="detail.image" :alt="detail.name"><span v-else>📦</span><span class="promo-badge" v-if="maxPromo(detail)">−{{maxPromo(detail)}}%</span></div>
+      <div class="sec head">
+        <div class="meta">{{[detail.brand, detail.category && $t(detail.category)].filter(Boolean).join(' · ')}}</div>
+        <h2>{{detail.name}}</h2>
+        <div class="vol" v-if="detail.volume">{{detail.volume}}</div>
+        <div class="rate" v-if="detail.reviews" @click="scrollReviews">{{stars(Math.round(detail.rating))}} {{detail.rating}} <span>· {{nReviews(detail.reviews)}}</span></div>
+        <div class="big-price" style="margin-top:10px">{{money(unitPrice(detail))}} <small>{{ $t('so\'m') }} / {{ sel(detail).unit==='dona' ? uLabel(detail) : pName(detail) }}</small>
+          <s class="old" v-if="oldPrice(detail)">{{money(oldPrice(detail))}}</s></div>
+        <div class="v promo-note" v-if="promoNote(detail)">🏷 {{promoNote(detail)}}</div>
+        <div class="v muted" v-if="detail.box_qty>1">1 {{pName(detail)}} = {{detail.box_qty}} {{uLabel(detail)}} · {{money(detail.box_price)}} {{ $t('so\'m') }}</div>
+        <!-- Assortimentlar (Ranglar / Hidlar / Turlar) -->
+        <div class="variants-panel" v-if="detail.colors && detail.colors.length">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span class="bold" style="font-size:14px">✨ {{ $t('Assortimentlar') }}:</span>
+            <span class="small muted">{{detail.colors.length}} {{ $t('xil variant') }}</span>
+          </div>
+
+          <!-- Chiplar orqali tanlash -->
+          <div class="colors big">
+            <button type="button" v-for="c in detail.colors" :key="'chip-'+c" :class="{on: sel(detail).color===c}" @click="selectColor(detail, c)">
+              <span v-if="sel(detail).color===c">✓ </span>{{c}}
+              <span v-if="colorInCart(detail, c)" class="c-badge">{{colorInCart(detail, c)}}</span>
+            </button>
+          </div>
+
+          <!-- Har bir variant bo'yicha alohida stepper va miqdor -->
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+            <div class="small muted" style="font-weight:600">📋 {{ $t('Har birini alohida tanlang') }}:</div>
+            <div v-for="c in detail.colors" :key="'row-'+c" class="variant-row" :class="{active: sel(detail).color===c}">
+              <img v-if="detail.image" :src="detail.image" class="variant-thumb" :alt="c">
+              <span v-else class="variant-thumb-ph">📦</span>
+              <div class="variant-left" @click="selectColor(detail, c)">
+                <span style="font-size:14px;color:var(--btn)" v-if="sel(detail).color===c">●</span>
+                <span style="font-size:14px;color:var(--hint)" v-else>○</span>
+                <b>{{c}}</b>
+                <span v-if="colorInCart(detail, c)" class="variant-in-cart">✓ {{colorInCart(detail, c)}} ta</span>
+              </div>
+              <div class="variant-stepper">
+                <button type="button" @click="decColorCart(detail, c)" :disabled="!colorInCart(detail, c)">−</button>
+                <span class="cnt">{{colorInCart(detail, c)}}</span>
+                <button type="button" class="plus" @click="incColorCart(detail, c)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="seg" v-if="unitMode==='both' && detail.box_qty>1" style="margin-top:10px">
+          <button :class="{on: sel(detail).unit==='dona'}" @click="setUnit(detail,'dona')">{{uLabel(detail)}}</button>
+          <button :class="{on: sel(detail).unit==='karobka'}" @click="setUnit(detail,'karobka')">{{pName(detail)}}</button>
+        </div>
+      </div>
+      <div class="sec" v-if="detail.description">
+        <h4>{{ $t('Tavsif') }}</h4>
+        <div class="desc">{{detail.description}}</div>
+      </div>
+      <div class="sec props">
+        <h4>{{ $t('Xususiyatlari') }}</h4>
+        <div class="line" v-if="detail.brand"><span>{{ $t('Brend') }}</span><b>{{detail.brand}}</b></div>
+        <div class="line" v-if="detail.category"><span>{{ $t('Kategoriya') }}</span><b>{{ $t(detail.category) }}</b></div>
+        <div class="line" v-if="detail.volume"><span>{{ $t('Hajmi') }}</span><b>{{detail.volume}}</b></div>
+        <div class="line" v-if="detail.audience"><span>{{ $t('Kimlar uchun') }}</span><b>{{ $t(AUDIENCE[detail.audience]) }}</b></div>
+        <div class="line" v-if="detail.size"><span>{{ $t("O'lcham") }}</span><b>{{detail.size}}</b></div>
+        <div class="line" v-if="detail.colors && detail.colors.length"><span>{{ $t('Ranglar') }}</span><b style="text-align:right">{{detail.colors.join(', ')}}</b></div>
+        <div class="line" v-if="detail.box_qty>1"><span>{{pName(detail)}}</span><b>{{detail.box_qty}} {{uLabel(detail)}}</b></div>
+        <div class="line"><span>{{ $t('Narxi') }} / {{uLabel(detail)}}</span><b>{{money(detail.piece_price)}}</b></div>
+        <div class="line" v-if="detail.box_qty>1"><span>{{ $t('Narxi') }} / {{pName(detail)}}</span><b>{{money(detail.box_price)}}</b></div>
+      </div>
+      <div class="sec" ref="revEl">
+        <h4>{{ $t('Sharhlar') }} <span class="muted" v-if="detail.reviews">({{detail.reviews}})</span></h4>
+        <div class="sum" v-if="detail.reviews && detail.dist">
+          <div class="avg"><b>{{detail.rating}}</b><span class="rate">{{stars(Math.round(detail.rating))}}</span></div>
+          <div class="bars"><div v-for="(n, i) in detail.dist" :key="i">{{5 - i}} <i><em :style="{width: (n / detail.reviews * 100) + '%'}"></em></i> {{n}}</div></div>
+        </div>
+        <!-- O'z sharhini yozish -->
+        <div class="note-box" v-if="me && me.client && !me.client.needs_profile">
+          <b>{{ detail.mine ? $t('Sizning sharhingiz') : $t('Sharh qoldiring') }}</b>
+          <div class="muted small" v-if="detail.mine && detail.mine.hidden">{{ $t("Sharhingiz do'kon tomonidan yashirilgan") }}</div>
+          <div class="star-pick">
+            <button v-for="n in 5" :key="n" :class="{on: n <= rv.rating}" @click="rv.rating = n" :aria-label="n">★</button>
+          </div>
+          <textarea v-model="rv.text" maxlength="1000" :placeholder="$t('Mahsulot haqida fikringiz (ixtiyoriy)')"></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn" :disabled="sending || !rv.rating" @click="sendReview">{{ detail.mine ? $t('Yangilash') : $t('Yuborish') }}</button>
+            <button v-if="detail.mine" class="btn red" style="width:auto" :disabled="sending" @click="deleteReview">🗑</button>
+          </div>
+        </div>
+        <div class="note-box" v-else>
+          {{ $t('Sharh yozish uchun hisobingizga kiring') }}
+          <button class="btn ghost sm" style="margin-top:8px" @click="closeProduct(); tab='account'">{{ $t('Kirish') }}</button>
+        </div>
+        <div class="rv" v-for="r in (detail.list || [])" :key="r.id">
+          <div class="who"><b>{{r.author}}</b><span class="buyer" v-if="r.buyer">✓ {{ $t('Xaridor') }}</span>
+            <span class="rate">{{stars(r.rating)}}</span><span class="muted small" style="margin-left:auto">{{dt(r.date, false)}}</span></div>
+          <div class="txt" v-if="r.text">{{r.text}}</div>
+        </div>
+        <div class="muted" v-if="detail.list && !detail.list.length" style="padding-top:10px">{{ $t("Hali sharh yo'q. Birinchi bo'lib fikr bildiring!") }}</div>
+      </div>
+    </div>
+    <div class="buy"><div class="in2">
+      <div class="stepper">
+        <button @click="sel(detail).qty = Math.max(1, sel(detail).qty-1)">−</button>
+        <input type="number" :inputmode="isFrac(detail) ? 'decimal' : 'numeric'" min="0" :step="isFrac(detail) ? 'any' : 1" v-model.number="sel(detail).qty">
+        <button @click="sel(detail).qty++">+</button>
+      </div>
+      <button class="box-add" v-if="sel(detail).unit==='dona' && detail.box_qty>1" @click="addBox(detail)" style="width:auto;white-space:nowrap">+{{detail.box_qty}}</button>
+      <button class="btn" @click="addToCart(detail)">🛒 {{ $t('Savatga') }} <span v-if="sel(detail).color">({{sel(detail).color}})</span> · {{money(Math.round(unitPrice(detail) * (+sel(detail).qty || 1)))}}</button>
+    </div></div>
+  </div>
+
+  <nav class="tabs" v-show="!detail">
+    <button :class="{on: tab==='catalog'}" @click="tab='catalog'"><span class="ic" v-html="ICONS.products"></span>{{ $t('Katalog') }}</button>
+    <button :class="{on: tab==='cart'}" @click="tab='cart'"><span class="ic" v-html="ICONS.orders"></span>{{ $t('Savat') }}<span class="cnt" v-if="cart.length">{{cart.length}}</span></button>
+    <button :class="{on: tab==='account'}" @click="tab='account'"><span class="ic" v-html="ICONS.staff"></span>{{ $t('Hisobim') }}</button>
+  </nav>
+  <div class="toast" v-if="toastMsg">{{toastMsg}}</div>
+</div>
+
+<script type="module">
+import { createApp, ref, reactive, computed, watch, onMounted, nextTick } from 'vue';
+import { t, i18n, setLang, translated, nReviews } from '/i18n/index.js';
+import { logoSvg } from '/brand/brand.js';
+import { ICONS } from '/brand/icons.js';
+
+// Har bir filialning katalogi alohida: /shop/<qisqa kod>. Kod bo'lmasa — umumiy katalog ochiladi.
+const pathSlug = (location.pathname.match(/^\/shop\/([a-z0-9-]+)/) || [])[1] || '';
+const SLUG = pathSlug || 'default';
+
+// Kirish tokeni va savat brauzerda filial bo'yicha alohida saqlanadi
+const tokenKey = 'shop_token:' + SLUG;
+const tokenStore = {
+  get() { try { return localStorage.getItem(tokenKey) || ''; } catch { return ''; } },
+  set(v) { try { v ? localStorage.setItem(tokenKey, v) : localStorage.removeItem(tokenKey); } catch { /* jim */ } },
+};
+
+async function api(method, url, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (tokenStore.get()) headers['X-Shop-Token'] = tokenStore.get();
+  url = url.replace(/^\/api\/shop\//, `/api/shop/${SLUG}/`);
+  const r = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'Xatolik');
+  return d;
+}
+
+const money = (n) => (Math.round(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const dt = (s, t = true) => { if (!s) return ''; const [d, tm] = s.split(' '); const [y, m, dd] = d.split('-'); return `${dd}.${m}.${y}` + (t && tm ? ' ' + tm.slice(0, 5) : ''); };
+
+const app = createApp({
+  setup() {
+    const tab = ref('catalog');
+    const accTab = ref('orders');
+    const catalog = ref({ title: 'Katalog', products: [] });
+    const q = ref('');
+    const brand = ref('');
+    const category = ref('');
+    // Kimlar uchun filtri: Uniseks mahsulotlar erkaklar va ayollar filtrida ham ko'rinadi
+    const AUDIENCE = { men: 'Erkaklar uchun', women: 'Ayollar uchun', unisex: 'Uniseks', kids: 'Bolalar uchun' };
+    const audience = ref('');
+    const sels = reactive({});
+    const cart = ref([]);
+    const note = ref('');
+    const me = ref(null);
+    const history = ref(null);
+    const sending = ref(false);
+    const editProfile = ref(false);
+    const prof = reactive({ type: 'b2c', company_name: '', inn: '', contact_name: '', address: '' });
+    const fillProf = () => {
+      const c = me.value && me.value.client;
+      if (c) Object.assign(prof, { type: c.type, company_name: c.company_name, inn: c.inn, contact_name: c.contact_name, address: c.address || '' });
+    };
+    const startEdit = () => { fillProf(); editProfile.value = true; };
+    const saveProfile = async () => {
+      sending.value = true;
+      try {
+        await api('POST', '/api/shop/profile', prof);
+        editProfile.value = false;
+        toast("Ma'lumotlar saqlandi");
+        await loadMe();
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+    const toastMsg = ref('');
+    let toastT;
+    const toast = (m) => { toastMsg.value = t(m); clearTimeout(toastT); toastT = setTimeout(() => (toastMsg.value = ''), 3500); };
+
+    const cartKey = 'cart:' + SLUG;
+    try { cart.value = JSON.parse(localStorage.getItem(cartKey) || '[]'); } catch { cart.value = []; }
+    watch(cart, (v) => { try { localStorage.setItem(cartKey, JSON.stringify(v)); } catch {} }, { deep: true });
+
+    // Katalog sotuv birligi: 'piece' — dona (optom narx donaga), 'box' — karobka, 'both' — tanlanadi
+    const unitMode = computed(() => catalog.value.sell_unit || 'piece');
+    const boxOnly = computed(() => unitMode.value === 'box');
+    const sel = (p) => {
+      if (!p) return { unit: 'dona', qty: 1, color: '' };
+      if (!sels[p.id]) {
+        const defaultColor = (p.colors && p.colors.length) ? p.colors[0] : '';
+        sels[p.id] = { unit: unitMode.value === 'box' ? 'karobka' : 'dona', qty: 1, color: defaultColor };
+      }
+      return sels[p.id];
+    };
+    const selectColor = (p, c) => {
+      sel(p).color = c;
+    };
+    const colorInCart = (p, color) => {
+      if (!p || !color) return 0;
+      const item = cart.value.find((x) => x.product_id === p.id && (x.color || '') === color);
+      return item ? item.qty : 0;
+    };
+    const incColorCart = (p, color) => {
+      sel(p).color = color;
+      const unit = sel(p).unit || 'dona';
+      const ex = cart.value.find((x) => x.product_id === p.id && x.unit === unit && (x.color || '') === color);
+      if (ex) {
+        ex.qty++;
+      } else {
+        cart.value.push({
+          product_id: p.id,
+          name: [p.name, p.volume, p.size].filter(Boolean).join(' '),
+          color,
+          unit,
+          qty: 1,
+          box_qty: p.box_qty,
+          base: unit === 'karobka' ? p.box_price : p.piece_price,
+          price: unit === 'karobka' ? p.box_price : p.piece_price,
+          promos: p.promos || [],
+          frac: !!p.frac && unit === 'dona',
+          unit_label: uLabel(p),
+          pack_label: pName(p),
+          image: p.image || '',
+        });
+      }
+      toast(`${color}: ${t("savatga qo'shildi")}`);
+    };
+    const decColorCart = (p, color) => {
+      const unit = sel(p).unit || 'dona';
+      const idx = cart.value.findIndex((x) => x.product_id === p.id && x.unit === unit && (x.color || '') === color);
+      if (idx !== -1) {
+        if (cart.value[idx].qty > 1) {
+          cart.value[idx].qty--;
+        } else {
+          cart.value.splice(idx, 1);
+        }
+      }
+    };
+    // "+1 karobka": dona soniga bir karobkadagi dona qo'shiladi
+    const addBox = (p) => { const s = sel(p); s.qty = (+s.qty === 1 ? 0 : +s.qty || 0) + p.box_qty; };
+    // Kategoriyalar — mahsulot soni bo'yicha; brendlar — tanlangan kategoriya ichida
+    const categories = computed(() => {
+      const m = new Map();
+      for (const p of catalog.value.products) if (p.category) m.set(p.category, (m.get(p.category) || 0) + 1);
+      return [...m.entries()].sort((a, b) => b[1] - a[1]).map(([c]) => c);
+    });
+    const brands = computed(() => [...new Set(catalog.value.products
+      .filter((p) => !category.value || p.category === category.value).map((p) => p.brand).filter(Boolean))].sort());
+    const filtered = computed(() => {
+      const t = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+      return catalog.value.products
+        .filter((p) => !category.value || p.category === category.value)
+        .filter((p) => !brand.value || p.brand === brand.value)
+        .filter((p) => !audience.value || p.audience === audience.value || (p.audience === 'unisex' && ['men', 'women'].includes(audience.value)))
+        .filter((p) => t.every((x) => `${p.name} ${p.brand || ''} ${p.category || ''} ${p.volume || ''} ${p.size || ''} ${(p.colors || []).join(' ')}`.toLowerCase().includes(x)));
+    });
+    const audiences = computed(() => Object.keys(AUDIENCE).filter((a) => catalog.value.products.some((p) => p.audience === a)));
+    const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+    // ---- Mahsulot sahifasi (#p/ID): brauzerning orqaga tugmasi yopadi ----
+    const detail = ref(null);
+    const pdEl = ref(null);
+    const revEl = ref(null);
+    const rv = reactive({ rating: 0, text: '' });
+    const loadDetail = async (id) => {
+      try {
+        const d = await api('GET', '/api/shop/products/' + id);
+        if (!detail.value || detail.value.id !== d.id) return;
+        detail.value = d;
+        rv.rating = d.mine ? d.mine.rating : 0;
+        rv.text = d.mine ? d.mine.text : '';
+      } catch (e) { toast(e.message); closeProduct(); }
+    };
+    const showFromHash = () => {
+      const m = location.hash.match(/^#p\/(\d+)$/);
+      if (!m) { detail.value = null; return; }
+      const id = +m[1];
+      if (detail.value && detail.value.id === id) return;
+      detail.value = catalog.value.products.find((p) => p.id === id) || { id, name: '', box_qty: 1, piece_price: 0, box_price: 0 };
+      rv.rating = 0; rv.text = '';
+      nextTick(() => { if (pdEl.value) pdEl.value.scrollTop = 0; });
+      loadDetail(id);
+    };
+    const openProduct = (p) => { location.hash = 'p/' + p.id; };
+    const closeProduct = () => {
+      if (!/^#p\//.test(location.hash)) return;
+      // Sahifaga to'g'ridan-to'g'ri havola bilan kirilgan bo'lsa orqaga yo'q — xeshni almashtiramiz
+      if (window.history.state && window.history.state.fromCatalog) window.history.back();
+      else { window.history.replaceState(null, '', location.pathname + location.search); showFromHash(); }
+    };
+    window.addEventListener('hashchange', () => {
+      if (/^#p\//.test(location.hash) && !(window.history.state && window.history.state.fromCatalog)) window.history.replaceState({ fromCatalog: true }, '');
+      showFromHash();
+    });
+    const scrollReviews = () => revEl.value && revEl.value.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const sendReview = async () => {
+      sending.value = true;
+      try {
+        await api('POST', `/api/shop/products/${detail.value.id}/review`, { rating: rv.rating, text: rv.text });
+        toast('Rahmat! Sharhingiz saqlandi');
+        await loadDetail(detail.value.id);
+        refreshCatalog();
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+    const deleteReview = async () => {
+      if (!confirm(t("Sharhingiz o'chirilsinmi?"))) return;
+      sending.value = true;
+      try {
+        await api('DELETE', `/api/shop/products/${detail.value.id}/review`);
+        toast("Sharh o'chirildi");
+        await loadDetail(detail.value.id);
+        refreshCatalog();
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+    const refreshCatalog = async () => { try { catalog.value = await api('GET', '/api/shop/catalog'); } catch { /* jim */ } };
+    const cartTotal = computed(() => cart.value.reduce((a, c) => a + Math.round(c.qty * cPrice(c)), 0));
+
+    // Birlik nomlari (mahsulotniki: kg, litr, qop ...), kasr miqdor, aksiya (miqdor shartli) — server bilan bir xil qoida
+    const uLabel = (p) => t(p.unit_label || 'dona');
+    const pName = (p) => t(p.pack_name || 'karobka');
+    const isFrac = (p) => !!p.frac && sel(p).unit === 'dona';
+    const pctFor = (promos, pieces) => (promos || []).filter((a) => pieces >= a.min).reduce((m, a) => Math.max(m, a.pct), 0);
+    const promoPrice = (price, pct) => (pct > 0 ? Math.round(price * (1 - pct / 100) / 100) * 100 : price);
+    const maxPromo = (p) => (p.promos || []).reduce((m, a) => Math.max(m, a.pct), 0);
+    const piecesOf = (p) => (sel(p).unit === 'karobka' ? (+sel(p).qty || 1) * p.box_qty : (+sel(p).qty || 1));
+    const unitPrice = (p) => promoPrice(sel(p).unit === 'karobka' ? p.box_price : p.piece_price, pctFor(p.promos, piecesOf(p)));
+    const oldPrice = (p) => {
+      const base = sel(p).unit === 'karobka' ? (p.base_piece || p.piece_price) * p.box_qty : (p.base_piece || p.piece_price);
+      return base > unitPrice(p) ? base : 0;
+    };
+    const promoNote = (p) => {
+      const a = (p.promos || []).filter((x) => x.min > 0).sort((x, y) => y.pct - x.pct)[0];
+      return a ? t('{0} {1} dan olsangiz −{2}%', [a.min, uLabel(p), a.pct]) : '';
+    };
+    const cPrice = (c) => promoPrice(c.base ?? c.price, pctFor(c.promos, c.unit === 'karobka' ? c.qty * c.box_qty : c.qty));
+    const setUnit = (p, u) => { sel(p).unit = u; sel(p).qty = 1; };
+    const addToCart = (p) => {
+      const s = sel(p);
+      const color = s.color || ((p.colors && p.colors.length) ? p.colors[0] : '');
+      const frac = !!p.frac && s.unit === 'dona';
+      const qty = frac ? Math.max(0.001, Math.round((+s.qty || 1) * 1000) / 1000) : Math.max(1, Math.round(+s.qty || 1));
+      const ex = cart.value.find((c) => c.product_id === p.id && c.unit === s.unit && (c.color || '') === color);
+      if (ex) ex.qty = Math.round((ex.qty + qty) * 1000) / 1000;
+      else cart.value.push({
+        product_id: p.id, name: [p.name, p.volume, p.size].filter(Boolean).join(' '), color, unit: s.unit, qty, box_qty: p.box_qty,
+        base: s.unit === 'karobka' ? p.box_price : p.piece_price, price: s.unit === 'karobka' ? p.box_price : p.piece_price,
+        promos: p.promos || [], frac, unit_label: uLabel(p), pack_label: pName(p),
+        image: p.image || '',
+      });
+      s.qty = 1;
+      toast(`${color ? color + ': ' : ''}${t("Savatga qo'shildi")}`);
+    };
+
+    const loadMe = async () => {
+      try {
+        me.value = await api('GET', '/api/shop/me');
+        if (me.value.client && me.value.client.needs_profile) fillProf();
+        if (me.value.client) history.value = await api('GET', '/api/shop/history');
+      } catch (e) { toast(e.message); }
+    };
+
+    const guest = reactive({ name: '', phone: '+998' });
+
+    const checkout = async () => {
+      if (!me.value || !me.value.client) {
+        if (!guest.name.trim()) return toast("Ismingizni kiriting");
+        if (!guest.phone || guest.phone.replace(/\D/g, '').length < 9) return toast("Telefon raqamingizni to'liq kiriting");
+        sending.value = true;
+        try {
+          const r = await api('POST', '/api/shop/guest-order', {
+            name: guest.name.trim(),
+            phone: guest.phone,
+            items: cart.value,
+            note: note.value,
+          });
+          cart.value = [];
+          note.value = '';
+          if (r.token) await afterAuth(r);
+          toast(`Buyurtma #${r.id} yuborildi! Tez orada bog'lanamiz.`);
+          tab.value = 'account';
+          accTab.value = 'orders';
+        } catch (e) { toast(e.message); } finally { sending.value = false; }
+        return;
+      }
+      if (me.value.client.needs_profile) { tab.value = 'account'; return toast("Avval ma'lumotlaringizni to'ldiring"); }
+      sending.value = true;
+      try {
+        const r = await api('POST', '/api/shop/orders', { items: cart.value, note: note.value });
+        cart.value = [];
+        note.value = '';
+        toast(`Buyurtma #${r.id} yuborildi! Tez orada bog'lanamiz.`);
+        await loadMe();
+        tab.value = 'account';
+        accTab.value = 'orders';
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+
+    // ---- Sayt orqali kirish / ro'yxatdan o'tish ----
+    const authMode = ref('login');
+    // "+998" oldindan yozilgan: foydalanuvchi to'liq raqamni yozsa takror bo'lmasin
+    const fixPhone = (v) => {
+      let x = String(v || '').replace(/[^\d+ ]/g, '');
+      const m = x.match(/^\+?998\s*\+?\s*998(.*)$/);
+      if (m) x = '+998' + m[1];
+      return x;
+    };
+    const auth = reactive({ phone: '+998', password: '', type: 'b2b', company_name: '', inn: '', contact_name: '', address: '' });
+    const afterAuth = async (r) => {
+      tokenStore.set(r.token);
+      auth.password = '';
+      await loadMe();
+    };
+    const doLogin = async () => {
+      const p = fixPhone(auth.phone);
+      if (p.replace(/\D/g, '').length < 9) return toast("Telefon raqamingizni to'liq kiriting");
+      sending.value = true;
+      try {
+        const r = await api('POST', '/api/shop/web/login', {
+          phone: auth.phone,
+          name: auth.contact_name || '',
+          password: auth.password || '',
+        });
+        await afterAuth(r);
+        toast("Xush kelibsiz!");
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+    // ---- Kirgan mijoz parolini o'zgartiradi ----
+    const pwForm = reactive({ open: false, p1: '', p2: '' });
+    const changePassword = async () => {
+      if (pwForm.p1.length < 4) return toast('Parol kamida 4 belgi');
+      if (pwForm.p1 !== pwForm.p2) return toast('Parollar bir xil emas');
+      sending.value = true;
+      try {
+        await api('POST', '/api/shop/password', { password: pwForm.p1 });
+        Object.assign(pwForm, { open: false, p1: '', p2: '' });
+        toast("Parol saqlandi");
+        await loadMe();
+      } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+
+    const doRegister = async () => {
+      sending.value = true;
+      try { await afterAuth(await api('POST', '/api/shop/web/register', auth)); toast("Ro'yxatdan o'tdingiz!"); } catch (e) { toast(e.message); } finally { sending.value = false; }
+    };
+    const logout = async () => {
+      try { await api('POST', '/api/shop/web/logout'); } catch { /* jim */ }
+      tokenStore.set('');
+      history.value = null;
+      authMode.value = 'login';
+      await loadMe();
+    };
+
+    const cancelOrder = async (o) => {
+      if (!confirm(`Buyurtma #${o.id} bekor qilinsinmi?`)) return;
+      try { await api('POST', `/api/shop/orders/${o.id}/cancel`); loadMe(); } catch (e) { toast(e.message); }
+    };
+
+    watch(tab, (t) => { if (t === 'account') loadMe(); });
+    // Ochiq mahsulot sahifasi orqasida sahifa aylanmasin
+    watch(detail, (d) => { document.body.style.overflow = d ? 'hidden' : ''; });
+    onMounted(async () => {
+      try { catalog.value = await api('GET', '/api/shop/catalog'); } catch { location.replace('/shop'); return; }   // filial topilmadi / yopilgan
+      if (catalog.value.theme_color) {
+        const c = catalog.value.theme_color;
+        document.documentElement.style.setProperty('--btn', c);
+        document.documentElement.style.setProperty('--link', c);
+        document.documentElement.style.setProperty('--gold-dark', c);
+        const hdr = document.querySelector('header');
+        if (hdr) hdr.style.background = `linear-gradient(90deg, ${c}, #1e1b4b)`;
+      }
+      const su = catalog.value.sell_unit;
+      if (su !== 'both') cart.value = cart.value.filter((c) => c.unit === (su === 'box' ? 'karobka' : 'dona'));
+      document.title = catalog.value.title;
+      await loadMe();
+      showFromHash();
+    });
+
+    return {
+      tab, accTab, catalog, q, brand, brands, category, categories, filtered, stars, AUDIENCE, audience, audiences,
+      nReviews, detail, pdEl, revEl, rv, openProduct, closeProduct, scrollReviews, sendReview, deleteReview, sel, cart, cartTotal, note, me, history, sending, toastMsg,
+      editProfile, prof, startEdit, saveProfile, boxOnly, unitMode, addBox, auth, authMode, fixPhone, guest,
+      pwForm, changePassword, doLogin, doRegister, logout,
+      selectColor, colorInCart, incColorCart, decColorCart,
+      addToCart, checkout, unitPrice, setUnit, cancelOrder, money, dt, uLabel, pName, isFrac, maxPromo, oldPrice, promoNote, cPrice,
+      ORDER: translated({ new: 'Yangi', confirmed: 'Tasdiqlandi', rejected: 'Rad etildi', cancelled: 'Bekor qilindi' }),
+      METHODS: translated({ cash: 'Naqd', transfer: 'Perechisleniye', card: 'Karta', other: 'Boshqa' }),
+      logoH: logoSvg('h', 'silver'), ICONS,
+      i18n, toggleLang: () => setLang(i18n.lang === 'uz' ? 'ru' : (i18n.lang === 'ru' ? 'en' : 'uz')),
+    };
+  },
+});
+app.config.globalProperties.$t = t;
+
+// Filiallar ro'yxati (/shop): har biri o'z katalogiga olib boradi
+async function branchPicker() {
+  const el = document.getElementById('app');
+  el.removeAttribute('v-cloak');
+  const esc = (v) => String(v || '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  let list = [];
+  try { list = await (await fetch('/api/shop-branches')).json(); } catch { /* jim */ }
+  document.title = t('Katalog');
+  el.innerHTML = `<header><div class="in"><span class="logo">${logoSvg('h', 'silver')}</span></div></header>
+    <div class="wrap"><h2 style="margin:6px 0 12px">${esc(t('Filialni tanlang'))}</h2>
+    ${list.map((b) => `<a class="panel" style="display:block;text-decoration:none;color:inherit" href="/shop/${esc(b.slug)}"><b>${esc(b.name)}</b>${b.address ? `<div class="muted">📍 ${esc(b.address)}</div>` : ''}</a>`).join('')
+      || `<div class="panel muted">${esc(t("Hozircha katalog yo'q"))}</div>`}</div>`;
+}
+
+app.mount('#app');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>

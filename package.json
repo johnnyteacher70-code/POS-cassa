@@ -1,0 +1,41 @@
+{
+  "name": "dokon-boshqaruv",
+  "version": "2.0.0",
+  "description": "Do'kon boshqaruv — ko'p filialli optom savdo: mijozlar, qarzdorlik, POS kassa, nakladnoy, KP, sayt katalog",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node scripts/run.js",
+    "dev": "node --watch server/index.js",
+    "test": "bash test/run.sh",
+    "backup": "node server/backup.js",
+    "backup:pg": "node server/backup_pg.js",
+    "demo": "node server/demo.js",
+    "demo:tarmoq": "node scripts/demo-tarmoq.js",
+    "owner": "node server/admin_user.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@zxing/library": "^0.21.3",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "12.11.1",
+    "compression": "^1.8.2",
+    "dotenv": "^18.0.5",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "html2pdf.js": "^0.14.0",
+    "iconv-lite": "^0.7.3",
+    "jszip": "^3.10.2",
+    "multer": "^2.4.0",
+    "pg": "^8.23.1",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.35.5",
+    "vue": "^3.5.43"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}

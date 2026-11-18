@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xaridor ekrani</title>
+<link rel="icon" type="image/svg+xml" href="/brand/mark.svg">
+<script src="/api/brand.js"></script>
+<link rel="stylesheet" href="/vendor/inter/index.css">
+<style>
+  /* Xaridorga qaragan ikkinchi monitor: kassadagi savat (BroadcastChannel orqali, faqat shu kompyuter ichida) */
+  :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --accent: #818cf8; --green: #34d399; --red: #f87171; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter Variable', Inter, system-ui, sans-serif; overflow: hidden; }
+  .wrap { display: grid; grid-template-columns: 1.4fr 1fr; height: 100vh; gap: 24px; padding: 28px; }
+  .items { background: var(--card); border-radius: 22px; padding: 22px 26px; overflow: hidden; display: flex; flex-direction: column; }
+  .items h2 { margin: 0 0 12px; color: var(--muted); font-weight: 600; font-size: 20px; }
+  .list { flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px 0; border-bottom: 1px solid #334155; font-size: 24px; }
+  .row .q { color: var(--muted); font-size: 18px; }
+  .row.last { animation: hl 1.4s ease-out; }
+  @keyframes hl { from { background: rgba(129,140,248,.25); } to { background: transparent; } }
+  .promo { color: var(--red); font-size: 16px; font-weight: 700; margin-left: 8px; }
+  .side { display: flex; flex-direction: column; gap: 20px; }
+  .brand { text-align: center; padding: 18px; }
+  .brand .logo svg { width: 70%; max-width: 360px; height: auto; }
+  .total { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 22px; padding: 28px; text-align: center; }
+  .total .l { font-size: 22px; opacity: .85; }
+  .total .v { font-size: 72px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
+  .total .s { font-size: 20px; opacity: .85; margin-top: 6px; }
+  .info { background: var(--card); border-radius: 22px; padding: 20px 24px; font-size: 22px; }
+  .info .tr { display: flex; justify-content: space-between; padding: 6px 0; }
+  .change { color: var(--green); font-weight: 800; font-size: 40px; }
+  .idle { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
+  .idle .logo svg { width: 520px; max-width: 80vw; height: auto; }
+  .idle h1 { font-size: 46px; margin: 0; }
+  .idle p { font-size: 26px; color: var(--muted); margin: 0; }
+  .thanks h1 { font-size: 64px; }
+  .thanks .change { font-size: 64px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { logoSvg, brand } from '/brand/brand.js';
+const app = document.getElementById('app');
+const money = (n) => Math.round(Number(n) || 0).toLocaleString('ru-RU').replace(/ /g, ' ');
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const logo = logoSvg('full', 'silver');
+let state = { mode: 'idle' }, thanksTimer = null;
+
+function render() {
+  const s = state;
+  if (s.mode === 'thanks') {
+    app.innerHTML = `<div class="wrap"><div class="idle thanks"><div class="logo">${logo}</div><h1>Xaridingiz uchun rahmat!</h1>
+      ${s.change ? `<p>Qaytim</p><div class="change">${money(s.change)} so'm</div>` : ''}
+      ${s.bonus ? `<p>🎁 Bonus: +${money(s.bonus)} so'm</p>` : ''}</div></div>`;
+    return;
+  }
+  if (s.mode !== 'cart' || !s.items || !s.items.length) {
+    app.innerHTML = `<div class="wrap"><div class="idle"><div class="logo">${logo}</div><h1>Xush kelibsiz!</h1><p>${esc(s.welcome || (brand.name === 'LA CHERRY' ? (brand.tagline || 'PARFUM & COSMETICS') : brand.name))}</p></div></div>`;
+    return;
+  }
+  const rows = s.items.slice(-9).map((i, k, a) => `<div class="row${k === a.length - 1 ? ' last' : ''}"><div>${esc(i.name)}${i.promo ? `<span class="promo">−${i.promo}%</span>` : ''}
+      <div class="q">${esc(i.qty)} ${esc(i.unit)} × ${money(i.price)}</div></div><div>${money(i.total)}</div></div>`).join('');
+  app.innerHTML = `<div class="wrap">
+    <div class="items"><h2>Savat · ${s.items.length} ta</h2><div class="list">${rows}</div></div>
+    <div class="side">
+      <div class="brand"><div class="logo">${logo}</div></div>
+      <div class="total"><div class="l">JAMI</div><div class="v">${money(s.total)}</div><div class="s">so'm${s.discount ? ` · chegirma −${money(s.discount)}` : ''}</div></div>
+      <div class="info">
+        ${s.client ? `<div class="tr"><span>Mijoz</span><b>${esc(s.client)}</b></div>` : ''}
+        ${s.paid ? `<div class="tr"><span>To'lanadi</span><b>${money(s.paid)}</b></div>` : ''}
+        ${s.given ? `<div class="tr"><span>Berildi</span><b>${money(s.given)}</b></div>` : ''}
+        ${s.change ? `<div class="tr"><span>Qaytim</span><span class="change">${money(s.change)}</span></div>` : ''}
+        ${s.bonusBalance ? `<div class="tr"><span>🎁 Bonusingiz</span><b>${money(s.bonusBalance)}</b></div>` : ''}
+      </div>
+    </div></div>`;
+}
+const ch = new BroadcastChannel('pos-display');
+ch.onmessage = (e) => {
+  clearTimeout(thanksTimer);
+  state = e.data || { mode: 'idle' };
+  if (state.mode === 'thanks') thanksTimer = setTimeout(() => { state = { mode: 'idle', welcome: state.welcome }; render(); }, 9000);
+  render();
+};
+ch.postMessage({ hello: true });   // kassa joriy holatni qayta yuborsin
+render();
+</script>
+</body>
+</html>

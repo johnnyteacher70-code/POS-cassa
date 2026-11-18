@@ -59,8 +59,8 @@ router.get('/catalog', identify, (req, res) => {
   const level = lvl ? db.prepare('SELECT name FROM price_levels WHERE id=? AND deleted_at IS NULL').get(lvl) : null;
   res.json({
     price_level: level ? level.name : '',
-    title: getSetting('shop_title') || getSetting('company_name') || 'LA CHERRY — Onlayn Katalog',
-    welcome: getSetting('shop_welcome') || "LA CHERRY kosmetika olamiga xush kelibsiz!",
+    title: getSetting('shop_title') || getSetting('company_name') || "Do'kon boshqaruvi — Onlayn Katalog",
+    welcome: getSetting('shop_welcome') || "Do'konga xush kelibsiz!",
     phone: getSetting('company_phone'),
     theme_color: getSetting('theme_color') || '#d94680',
     theme_preset: getSetting('theme_preset') || 'cherry',

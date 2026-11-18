@@ -1,15 +1,11 @@
-// Logo: La Cherry rasmiy brend logotipi.
-// Fayl: kasmetika_2 dagi 'la cherry.jpg ' asosida moslangan PNG formatlar.
-// variant: 'full' — to'liq gerb (login va xaridor ekrani), 'h' — gorizontal (sidebar, shop, hujjatlar), 'mark' — kvadrat belgi (topbar, favicon)
-// tone: 'silver' — to'q fonda (oq/kumush rang), 'print' — oq qog'ozda (to'q siyoh rang, chop etish uchun)
-
-export const BRAND_NAME = "LA CHERRY";
+// Logo: Do'kon boshqaruvi rasmiy brend logotipi va yozuvi
+export const BRAND_NAME = "Do'kon boshqaruvi";
 const B = (typeof window !== 'undefined' && window.__BRAND) || {};
 export const brand = {
-  name: B.name || 'LA CHERRY',
-  tagline: B.tagline || (B.name && B.name !== 'LA CHERRY' ? '' : 'PARFUM & COSMETICS'),
-  logo: B.logo || '/brand/logo.png',
-  color: B.color || '#d94680'
+  name: B.name || "Do'kon boshqaruvi",
+  tagline: B.tagline || "",
+  logo: (B.logo && B.logo !== '/brand/logo.png') ? B.logo : '',
+  color: B.color || '#4f46e5'
 };
 const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -32,67 +28,56 @@ if (typeof document !== 'undefined' && brand.color && shade(brand.color, 0)) {
 
 let seq = 0;
 
-// Belgi: La Cherry rasmiy nishoni (mark.png / mark_print.png)
-function mark(id, x = 0, y = 0, size = 64, tone = 'silver') {
-  const isPrint = tone === 'print';
-  const markImg = isPrint ? '/brand/mark_print.png' : (brand.logo && brand.logo !== '/brand/logo.png' ? brand.logo : '/brand/mark.png');
-  return `<image href="${esc(markImg)}" x="${x}" y="${y}" width="${size}" height="${size}" preserveAspectRatio="xMidYMid meet"/>`;
-}
-
 const SANS = "'Inter Variable', Inter, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
 
 export function logoSvg(variant = 'h', tone = 'silver') {
   const id = 'brand-g' + ++seq;
   const isPrint = tone === 'print';
   const isColor = tone === 'color';
-  const main = isColor ? '#831843' : isPrint ? '#1E1B4B' : '#FFFFFF';
-  const sub = isColor ? '#be185d' : isPrint ? '#831843' : '#FDA4AF';
+  const main = isColor ? '#0f172a' : isPrint ? '#1e1b4b' : '#ffffff';
+  const sub = isColor ? '#475569' : isPrint ? '#64748b' : '#c7d2fe';
   const label = `role="img" aria-label="${esc(brand.name)}"`;
-  const name = esc(brand.name), tag = esc((brand.tagline || 'PARFUM & COSMETICS').toUpperCase());
+  const name = esc(brand.name);
+  const tag = esc(brand.tagline || (isPrint ? "Do'kon boshqaruvi" : ''));
 
-  // 1) Faqat belgi (mark): 64x64 yoki 512x512 kvadrat (topbar)
+  // 1) Faqat belgi (mark): 64x64 kvadrat
   if (variant === 'mark') {
-    const markImg = isPrint ? '/brand/mark_print.png' : (brand.logo && brand.logo !== '/brand/logo.png' ? brand.logo : '/brand/mark.png');
     return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" ${label}>
       <title>${name}</title>
-      <image href="${esc(markImg)}" x="0" y="0" width="64" height="64" preserveAspectRatio="xMidYMid meet"/>
+      <rect width="64" height="64" rx="16" fill="url(#bg-mark-${id})"/>
+      <defs>
+        <linearGradient id="bg-mark-${id}" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#6366f1"/>
+          <stop offset="1" stop-color="#4338ca"/>
+        </linearGradient>
+      </defs>
+      <text x="32" y="43" text-anchor="middle" font-size="34">🏪</text>
     </svg>`;
   }
 
-  // 2) To'liq / vertikal logo (full): Kirish sahifasi va Xaridor ekrani
+  // 2) To'liq / vertikal logo (full): Kirish sahifasi va Egasi paneli
   if (variant === 'full') {
-    const isCustom = brand.logo && brand.logo !== '/brand/logo.png' && brand.logo !== '/brand-assets/logo.png';
-    if (isCustom || (brand.name && brand.name !== 'LA CHERRY')) {
-      return `<svg viewBox="0 0 240 145" xmlns="http://www.w3.org/2000/svg" ${label}>
-        <title>${name}</title>
-        <image href="${esc(brand.logo || '/brand/logo.png')}" x="10" y="0" width="220" height="95" preserveAspectRatio="xMidYMid meet"/>
-        <text x="120" y="118" text-anchor="middle" font-family="${SANS}" font-weight="800" font-size="22" letter-spacing="2" fill="${main}">${name}</text>
-        <text x="120" y="136" text-anchor="middle" font-family="${SANS}" font-weight="600" font-size="10.5" letter-spacing="4" fill="${sub}">${tag}</text>
-      </svg>`;
-    }
-    const logoImg = isPrint ? '/brand/logo_print.png' : (brand.logo || '/brand/logo.png');
-    return `<svg viewBox="0 0 621 377" xmlns="http://www.w3.org/2000/svg" ${label}>
+    return `<svg viewBox="0 0 260 120" xmlns="http://www.w3.org/2000/svg" ${label}>
       <title>${name}</title>
-      <image href="${esc(logoImg)}" x="0" y="0" width="621" height="377" preserveAspectRatio="xMidYMid meet"/>
+      <rect x="98" y="4" width="64" height="64" rx="18" fill="url(#bg-full-${id})" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+      <defs>
+        <linearGradient id="bg-full-${id}" x1="98" y1="4" x2="162" y2="68" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#6366f1"/>
+          <stop offset="1" stop-color="#3730a3"/>
+        </linearGradient>
+      </defs>
+      <text x="130" y="48" text-anchor="middle" font-size="34">🏪</text>
+      <text x="130" y="94" text-anchor="middle" font-family="${SANS}" font-weight="800" font-size="20" letter-spacing="-0.3" fill="${main}">${name}</text>
+      <text x="130" y="112" text-anchor="middle" font-family="${SANS}" font-weight="600" font-size="10.5" letter-spacing="1" fill="${sub}">SAVDO VA KASSA TIZIMI</text>
     </svg>`;
   }
 
   // 3) Gorizontal logo (h): Sidebar, Topbar, Shop va Hujjatlar
-  const isCustom = brand.logo && brand.logo !== '/brand/logo.png' && brand.logo !== '/brand-assets/logo.png';
-  if (isCustom || (brand.name && brand.name !== 'LA CHERRY')) {
-    return `<svg viewBox="0 0 220 56" xmlns="http://www.w3.org/2000/svg" ${label}>
-      <title>${name}</title>
-      <image href="${esc(brand.logo || '/brand/logo.png')}" x="0" y="4" width="48" height="48" preserveAspectRatio="xMidYMid meet"/>
-      <text x="56" y="31" font-family="${SANS}" font-weight="800" font-size="${name.length > 14 ? 17 : 19}" letter-spacing="1.2" fill="${main}">${name}</text>
-      <text x="57" y="47" font-family="${SANS}" font-weight="600" font-size="9" letter-spacing="${tag.length > 12 ? 1.5 : 3.5}" fill="${sub}">${tag}</text>
-    </svg>`;
-  }
-
-  // Rasmiy La Cherry: haqiqiy la cherry rasmining o'zi
-  const logoImg = isPrint ? '/brand/logo_print.png' : (brand.logo || '/brand/logo.png');
-  return `<svg viewBox="0 0 621 377" xmlns="http://www.w3.org/2000/svg" ${label}>
+  return `<svg viewBox="0 0 240 50" xmlns="http://www.w3.org/2000/svg" ${label}>
     <title>${name}</title>
-    <image href="${esc(logoImg)}" x="0" y="0" width="621" height="377" preserveAspectRatio="xMidYMid meet"/>
+    <rect x="2" y="6" width="38" height="38" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+    <text x="21" y="32" text-anchor="middle" font-size="22">🏪</text>
+    <text x="48" y="32" font-family="${SANS}" font-weight="800" font-size="17" letter-spacing="-0.3" fill="${main}">${name}</text>
   </svg>`;
 }
 

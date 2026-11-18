@@ -285,7 +285,10 @@ const App = {
       <aside class="sidebar" :class="{open: menuOpen}">
         <div class="sidebar-brand-box">
           <div class="sidebar-brand-row">
-            <brand-logo variant="h" class="sidebar-logo"/>
+            <div class="sidebar-brand-title">
+              <span class="sidebar-brand-badge">🏪</span>
+              <span class="sidebar-brand-name">{{ $t("Do'kon boshqaruvi") }}</span>
+            </div>
             <button type="button" class="sidebar-close-btn" @click="menuOpen=false" :title="$t('Yopish')">✕</button>
           </div>
           <div class="sidebar-branch-pill" v-if="session.branch">

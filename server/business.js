@@ -7,11 +7,12 @@ const all = () => Object.fromEntries(main.prepare('SELECT key, value FROM busine
 
 // Sahifalarga beriladigan brend (hammaga ochiq: login sahifasi va katalogda ham kerak)
 function publicBrand() {
+  const logo = get('brand_logo') || '';
   return {
-    name: get('brand_name') || 'LA CHERRY',
-    tagline: get('brand_tagline') || (get('brand_name') ? '' : 'PARFUM & COSMETICS'),
-    color: get('brand_color') || '#d94680',
-    logo: get('brand_logo') || '/brand/logo.png',
+    name: get('brand_name') || "Do'kon boshqaruvi",
+    tagline: get('brand_tagline') || '',
+    color: get('brand_color') || '#4f46e5',
+    logo: (logo === '/brand/logo.png') ? '' : logo,
     industry: get('industry'),
   };
 }

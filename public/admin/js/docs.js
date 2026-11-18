@@ -40,7 +40,7 @@ const CompanyHead = {
   <div class="head-row">
     <div>
       <brand-logo variant="h" tone="color" class="doc-logo"/>
-      <div class="co" v-if="s.company_name && s.company_name !== 'LA CHERRY'">{{s.company_name}}</div>
+      <div class="co" v-if="s.company_name">{{s.company_name}}</div>
       <div v-if="s.company_address">{{s.company_address}}</div>
       <div v-if="s.company_phone">{{ $t('Tel') }}: {{s.company_phone}}</div>
     </div>
@@ -85,7 +85,7 @@ export const SaleDoc = {
 
     <div class="parties">
       <div class="p"><b class="h">{{ $t('Yetkazib beruvchi') }}</b>
-        <div><b>{{settings.data.company_name || 'LA CHERRY'}}</b> <span v-if="sale.branch_name">({{sale.branch_name}})</span></div>
+        <div><b>{{settings.data.company_name || "Do'kon boshqaruvi"}}</b> <span v-if="sale.branch_name">({{sale.branch_name}})</span></div>
         <div v-if="sale.register_name || (sale.register && sale.register.name)">🏪 <b>{{ $t("Kassa / Do'kon") }}:</b> {{sale.register_name || sale.register.name}}</div>
         <div v-if="sale.creator">👤 <b>{{ $t("Mas'ul sotuvchi") }}:</b> {{sale.creator.full_name || sale.creator.username}}<span v-if="sale.creator.phone"> (📞 {{sale.creator.phone}})</span><span v-else-if="settings.data.company_phone"> (📞 {{settings.data.company_phone}})</span></div>
         <div v-if="settings.data.company_inn">{{ $t('INN') }}: {{settings.data.company_inn}}</div>
@@ -179,7 +179,7 @@ export const QuoteDoc = {
     <div class="parties" style="margin-bottom:10px">
       <div class="p">
         <b class="h">{{ $t('Yetkazib beruvchi') }}</b>
-        <div><b>{{settings.data.company_name || 'LA CHERRY'}}</b> <span v-if="quote.branch_name">({{quote.branch_name}})</span></div>
+        <div><b>{{settings.data.company_name || "Do'kon boshqaruvi"}}</b> <span v-if="quote.branch_name">({{quote.branch_name}})</span></div>
         <div v-if="quote.register_name">🏪 <b>{{ $t("Kassa / Do'kon") }}:</b> {{quote.register_name}}</div>
         <div v-if="quote.creator">👤 <b>{{ $t("Mas'ul sotuvchi / Menejer") }}:</b> {{quote.creator.full_name || quote.creator.username}}</div>
         <div>📞 <b>{{ $t('Aloqa uchun') }}:</b> {{quote.creator && quote.creator.phone ? quote.creator.phone : (settings.data.company_phone || '—')}}</div>
@@ -269,8 +269,9 @@ export const ReceiptDoc = {
   },
   template: `
   <div class="receipt" :style="{width: width + 'mm'}">
-    <div class="rc-c" style="margin-bottom:6px"><img src="/brand/logo_print.png" onerror="this.src='/brand/logo.png'" style="max-width:120px;height:auto;display:block;margin:0 auto 4px" alt="LA CHERRY"></div>
-    <div class="rc-c rc-b" v-if="settings.data.company_name && settings.data.company_name !== 'LA CHERRY'" style="font-size:1.18em;letter-spacing:1px">{{settings.data.company_name}}</div>
+    <div class="rc-c" style="margin-bottom:6px">
+      <div style="font-size:1.2em;font-weight:900;letter-spacing:-0.3px;color:#111827">🏪 {{settings.data.company_name || "Do'kon boshqaruvi"}}</div>
+    </div>
     <div class="rc-c" v-if="sale.register_name || (sale.register && sale.register.name)" style="font-weight:700;font-size:1.08em;margin:3px 0;letter-spacing:0.5px">🏪 {{sale.register_name || (sale.register && sale.register.name)}}</div>
     <div class="rc-c" v-else-if="sale.branch_name" style="font-weight:600">{{sale.branch_name}} <span v-if="sale.branch_code">({{sale.branch_code}})</span></div>
     <div class="rc-c" v-if="settings.data.company_address">{{settings.data.company_address}}</div>

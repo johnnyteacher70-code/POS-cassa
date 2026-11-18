@@ -58,7 +58,7 @@ function render() {
     return;
   }
   if (s.mode !== 'cart' || !s.items || !s.items.length) {
-    app.innerHTML = `<div class="wrap"><div class="idle"><div class="logo">${logo}</div><h1>Xush kelibsiz!</h1><p>${esc(s.welcome || (brand.name === 'LA CHERRY' ? (brand.tagline || 'PARFUM & COSMETICS') : brand.name))}</p></div></div>`;
+    app.innerHTML = `<div class="wrap"><div class="idle"><div class="logo">${logo}</div><h1>Xush kelibsiz!</h1><p>${esc(s.welcome || brand.tagline || brand.name || "Do'kon boshqaruvi")}</p></div></div>`;
     return;
   }
   const rows = s.items.slice(-9).map((i, k, a) => `<div class="row${k === a.length - 1 ? ' last' : ''}"><div>${esc(i.name)}${i.promo ? `<span class="promo">−${i.promo}%</span>` : ''}

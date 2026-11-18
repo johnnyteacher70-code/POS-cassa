@@ -1,7 +1,7 @@
 {
-  "name": "LA CHERRY",
-  "short_name": "LA CHERRY",
-  "description": "LA CHERRY kosmetika va savdo boshqaruv tizimi",
+  "name": "Do'kon boshqaruvi",
+  "short_name": "Do'kon",
+  "description": "Ko'p filialli savdo va kassa boshqaruv tizimi",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -232,7 +232,10 @@ export const OwnerPage = {
     <!-- Owner Sidebar (Yon Menyu) -->
     <aside class="owner-sidebar" :class="{ open: mobileSidebarOpen }">
       <div class="owner-sidebar-brand">
-        <brand-logo variant="h" class="owner-sidebar-logo"/>
+        <div class="sidebar-brand-title">
+          <span class="sidebar-brand-badge">🏪</span>
+          <span class="sidebar-brand-name">{{ $t("Do'kon boshqaruvi") }}</span>
+        </div>
         <button type="button" class="owner-sidebar-close" @click="mobileSidebarOpen = false" :title="$t('Yopish')">✕</button>
       </div>
 

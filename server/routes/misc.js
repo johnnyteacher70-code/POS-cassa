@@ -206,7 +206,7 @@ router.get('/settings', (_req, res) => {
   const rows = db.prepare('SELECT key, value FROM settings').all();
   const out = Object.fromEntries(SETTING_KEYS.map((k) => [k, '']));
   for (const r of rows) if (SETTING_KEYS.includes(r.key)) out[r.key] = r.value;
-  if (!out.company_name) out.company_name = business.get('brand_name') || 'LA CHERRY';
+  if (!out.company_name) out.company_name = business.get('brand_name') || "Do'kon boshqaruvi";
   out.sell_unit = ['piece', 'box', 'both'].includes(out.sell_unit) ? out.sell_unit : 'piece';
   out.pos_pieces = out.pos_pieces === '0' ? '0' : '1';
   out.track_stock = out.track_stock === '1' ? '1' : '0';   // ombor qoldig'i (standart: o'chiq)

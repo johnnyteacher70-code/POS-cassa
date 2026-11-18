@@ -148,7 +148,17 @@ app.get('/manifest.webmanifest', (_req, res) => {
   if (b.logo) m.icons = [{ src: b.logo, sizes: '512x512', type: b.logo.endsWith('.png') ? 'image/png' : b.logo.endsWith('.webp') ? 'image/webp' : 'image/jpeg', purpose: 'any' }, ...m.icons];
   res.type('application/manifest+json').set('Cache-Control', 'no-cache').send(JSON.stringify(m));
 });
-app.use(express.static(path.join(ROOT, 'public'), { index: false }));
+app.use(express.static(path.join(ROOT, 'public'), {
+  index: false,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html') || filePath.endsWith('.webmanifest')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else if (/\.(css|js|woff2?|svg|png|jpg|webp)$/i.test(filePath)) {
+      // ETag bilan kesh: brauzer 1 soat keshlaydi, fonda stale-while-revalidate bilan tekshiradi
+      res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=604800');
+    }
+  }
+}));
 app.get(['/shop', '/shop/', '/shop/:slug', '/shop/:slug/'], (_req, res) => res.sendFile(path.join(ROOT, 'public/shop/index.html')));
 app.get('/', (req, res) => {
   const host = (req.hostname || '').toLowerCase();

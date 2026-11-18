@@ -1,35 +1,94 @@
-import { createApp, computed, ref, shallowRef, onMounted, watch, nextTick } from 'vue';
+import { createApp, computed, ref, shallowRef, onMounted, watch, nextTick, defineAsyncComponent } from 'vue';
 import { route, session, toasts, get, post, pageVersions, t, i18n, applyMe, reloadApp, can, pdfSheet, sheetShare, sheetDownload, sheetOpen } from './lib.js';
 import { setLang, tx } from '/i18n/index.js';
 import { Modal, MoneyInput, ClientPicker, ClientModal, ItemsEditor, PaymentModal, Badge, StaffSelect, RegisterSelect, BarcodeScannerModal } from './components.js';
-import { RegistersPage } from './pages/registers.js?v=2.3.2';
-import { ReviewsPage } from './pages/reviews.js?v=2.3.2';
-import { StaffPage } from './pages/staff.js?v=2.3.2';
-import { RolesPage } from './pages/roles.js?v=2.3.2';
-import { LabelsPage } from './pages/labels.js';
-import { ExpensesPage, ShiftsPage, ShiftView } from './pages/finance.js?v=2.3.2';
-import { InventoryPage, InventoryView } from './pages/inventory.js?v=2.3.2';
-import { ReportsPage } from './pages/reports.js';
-import { TransfersPage, TransferForm, TransferView } from './pages/transfers.js?v=2.3.2';
-import { PromotionsPage } from './pages/promotions.js?v=2.3.2';
-import { HardwarePage } from './pages/hardware.js';
-import { ReconciliationPage } from './pages/reconciliation.js';
-import { PayrollPage, AttendanceButton } from './pages/payroll.js?v=2.3.2';
-import { SuppliersPage, SupplierView, PurchasesPage, PurchaseForm, PurchaseView, PurchaseOrdersPage, PurchaseOrderForm, PurchaseOrderView } from './pages/suppliers.js?v=2.3.2';
-import { PosPage } from './pages/pos.js?v=2.3.2';
 import { loadSettings, moduleOn } from './docs.js';
 import { baseName, packName, unitName, isFrac } from './units.js';
 import { BrandLogo } from '/brand/brand.js';
 import { ICONS } from '/brand/icons.js?v=2.3.8';
-import { ClientsPage, ClientView } from './pages/clients.js?v=2.3.2';
-import { SalesPage, SaleForm, SaleView } from './pages/sales.js?v=2.3.2';
-import { PaymentsPage, DebtsPage, DashboardPage } from './pages/money.js?v=2.3.2';
-import { OrdersPage, OrderView } from './pages/orders.js';
-import { QuotesPage, QuoteForm, QuoteView } from './pages/quotes.js';
-import { ProductsPage, ProductView } from './pages/products.js?v=2.3.2';
-import { PartnerLoansPage } from './pages/partners.js';
-import { AuditPage, TrashPage, SettingsPage, LoginPage } from './pages/system.js?v=2.3.2';
-import { OwnerPage, SetupPage, leaveBranch } from './pages/owner.js?v=2.2.1';
+
+// Sahifalarni talab bo'yicha (lazy) yuklash: sahifa birinchi marta ochilgandagina tegishli JS yuklanadi
+const PageLoader = {
+  template: `<div style="display:flex;align-items:center;justify-content:center;min-height:240px;color:#64748b;font-weight:600;gap:10px">
+    <span class="spin"></span> <span>Yuklanmoqda...</span>
+  </div>`
+};
+
+const lazy = (loader, key) => defineAsyncComponent({
+  loader: () => loader().then((m) => m[key] || m.default || m),
+  loadingComponent: PageLoader,
+  delay: 80,
+  timeout: 30000,
+});
+
+const DashboardPage = lazy(() => import('./pages/money.js?v=2.3.2'), 'DashboardPage');
+const PaymentsPage = lazy(() => import('./pages/money.js?v=2.3.2'), 'PaymentsPage');
+const DebtsPage = lazy(() => import('./pages/money.js?v=2.3.2'), 'DebtsPage');
+
+const PosPage = lazy(() => import('./pages/pos.js?v=2.3.2'), 'PosPage');
+
+const ProductsPage = lazy(() => import('./pages/products.js?v=2.3.2'), 'ProductsPage');
+const ProductView = lazy(() => import('./pages/products.js?v=2.3.2'), 'ProductView');
+
+const SalesPage = lazy(() => import('./pages/sales.js?v=2.3.2'), 'SalesPage');
+const SaleForm = lazy(() => import('./pages/sales.js?v=2.3.2'), 'SaleForm');
+const SaleView = lazy(() => import('./pages/sales.js?v=2.3.2'), 'SaleView');
+
+const ClientsPage = lazy(() => import('./pages/clients.js?v=2.3.2'), 'ClientsPage');
+const ClientView = lazy(() => import('./pages/clients.js?v=2.3.2'), 'ClientView');
+const ReconciliationPage = lazy(() => import('./pages/reconciliation.js'), 'ReconciliationPage');
+
+const SuppliersPage = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'SuppliersPage');
+const SupplierView = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'SupplierView');
+const PurchasesPage = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchasesPage');
+const PurchaseForm = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchaseForm');
+const PurchaseView = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchaseView');
+const PurchaseOrdersPage = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchaseOrdersPage');
+const PurchaseOrderForm = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchaseOrderForm');
+const PurchaseOrderView = lazy(() => import('./pages/suppliers.js?v=2.3.2'), 'PurchaseOrderView');
+
+const InventoryPage = lazy(() => import('./pages/inventory.js?v=2.3.2'), 'InventoryPage');
+const InventoryView = lazy(() => import('./pages/inventory.js?v=2.3.2'), 'InventoryView');
+
+const TransfersPage = lazy(() => import('./pages/transfers.js?v=2.3.2'), 'TransfersPage');
+const TransferForm = lazy(() => import('./pages/transfers.js?v=2.3.2'), 'TransferForm');
+const TransferView = lazy(() => import('./pages/transfers.js?v=2.3.2'), 'TransferView');
+
+const ExpensesPage = lazy(() => import('./pages/finance.js?v=2.3.2'), 'ExpensesPage');
+const ShiftsPage = lazy(() => import('./pages/finance.js?v=2.3.2'), 'ShiftsPage');
+const ShiftView = lazy(() => import('./pages/finance.js?v=2.3.2'), 'ShiftView');
+
+const PayrollPage = lazy(() => import('./pages/payroll.js?v=2.3.2'), 'PayrollPage');
+const AttendanceButton = lazy(() => import('./pages/payroll.js?v=2.3.2'), 'AttendanceButton');
+
+const ReportsPage = lazy(() => import('./pages/reports.js'), 'ReportsPage');
+const PromotionsPage = lazy(() => import('./pages/promotions.js?v=2.3.2'), 'PromotionsPage');
+const OrdersPage = lazy(() => import('./pages/orders.js'), 'OrdersPage');
+const OrderView = lazy(() => import('./pages/orders.js'), 'OrderView');
+const QuotesPage = lazy(() => import('./pages/quotes.js'), 'QuotesPage');
+const QuoteForm = lazy(() => import('./pages/quotes.js'), 'QuoteForm');
+const QuoteView = lazy(() => import('./pages/quotes.js'), 'QuoteView');
+const PartnerLoansPage = lazy(() => import('./pages/partners.js'), 'PartnerLoansPage');
+
+const StaffPage = lazy(() => import('./pages/staff.js?v=2.3.2'), 'StaffPage');
+const RolesPage = lazy(() => import('./pages/roles.js?v=2.3.2'), 'RolesPage');
+const RegistersPage = lazy(() => import('./pages/registers.js?v=2.3.2'), 'RegistersPage');
+const ReviewsPage = lazy(() => import('./pages/reviews.js?v=2.3.2'), 'ReviewsPage');
+const HardwarePage = lazy(() => import('./pages/hardware.js'), 'HardwarePage');
+const LabelsPage = lazy(() => import('./pages/labels.js'), 'LabelsPage');
+
+const AuditPage = lazy(() => import('./pages/system.js?v=2.3.2'), 'AuditPage');
+const TrashPage = lazy(() => import('./pages/system.js?v=2.3.2'), 'TrashPage');
+const SettingsPage = lazy(() => import('./pages/system.js?v=2.3.2'), 'SettingsPage');
+const LoginPage = lazy(() => import('./pages/system.js?v=2.3.2'), 'LoginPage');
+
+const OwnerPage = lazy(() => import('./pages/owner.js?v=2.2.1'), 'OwnerPage');
+const SetupPage = lazy(() => import('./pages/owner.js?v=2.2.1'), 'SetupPage');
+
+const leaveBranch = async () => {
+  await post('/api/owner/leave');
+  reloadApp('#/');
+};
 
 const NAV = [
   // perm: bo'limni ko'rish uchun kerak bo'ladigan ruxsatlardan biri (yo'q bo'lsa — hammaga); group — menyudagi bo'lim; module — Odoo uslubidagi ilova kaliti

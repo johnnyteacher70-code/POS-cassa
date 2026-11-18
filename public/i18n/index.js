@@ -1,23 +1,69 @@
 // Uch til: o'zbekcha (asosiy, kalitlar), ruscha va inglizcha (English).
 // t('Mijozlar') -> 'Клиенты' / 'Clients';  t('{0} ta mijoz', [5])
 import { reactive } from 'vue';
-import RU, { PATTERNS as RU_PATTERNS, PHRASES as RU_PHRASES } from './ru.js';
-import EN, { PATTERNS as EN_PATTERNS, PHRASES as EN_PHRASES } from './en.js';
+
+let RU = null, RU_PATTERNS = [], RU_PHRASES = [];
+let EN = null, EN_PATTERNS = [], EN_PHRASES = [];
+let PHRASE_RE_RU = [], PHRASE_RE_EN = [];
+
+const W = "A-Za-zʻʼ'\\u2018\\u2019\\u02BB\\u02BC";
+
+function makePhraseRe(phrases) {
+  return (phrases || []).map(([uz, target]) => [
+    new RegExp(`(^|[^${W}])${uz.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![${W}])`, 'g'),
+    target
+  ]);
+}
+
+let loadPromise = null;
+async function loadDict(lang) {
+  if (lang === 'ru' && !RU) {
+    try {
+      const mod = await import('./ru.js');
+      RU = mod.default || {};
+      RU_PATTERNS = mod.PATTERNS || [];
+      RU_PHRASES = mod.PHRASES || [];
+      PHRASE_RE_RU = makePhraseRe(RU_PHRASES);
+      i18n.version++;
+    } catch (e) {
+      console.warn('Failed to load RU dictionary:', e);
+    }
+  } else if (lang === 'en' && !EN) {
+    try {
+      const mod = await import('./en.js');
+      EN = mod.default || {};
+      EN_PATTERNS = mod.PATTERNS || [];
+      EN_PHRASES = mod.PHRASES || [];
+      PHRASE_RE_EN = makePhraseRe(EN_PHRASES);
+      i18n.version++;
+    } catch (e) {
+      console.warn('Failed to load EN dictionary:', e);
+    }
+  }
+}
 
 function initial() {
   try {
     const saved = localStorage.getItem('lang');
     if (saved === 'ru' || saved === 'uz' || saved === 'en') return saved;
   } catch { /* jim */ }
-  const code = navigator.language || '';
+  const code = (typeof navigator !== 'undefined' && navigator.language) || '';
   return /^ru/i.test(code) ? 'ru' : 'uz';
 }
 
-export const i18n = reactive({ lang: initial() });
+const initLang = initial();
+export const i18n = reactive({ lang: initLang, version: 0 });
 if (typeof document !== 'undefined') document.documentElement.lang = i18n.lang;
+if (initLang === 'ru' || initLang === 'en') {
+  loadDict(initLang);
+}
 
-export function setLang(l) {
-  i18n.lang = (l === 'ru' || l === 'en') ? l : 'uz';
+export async function setLang(l) {
+  const target = (l === 'ru' || l === 'en') ? l : 'uz';
+  if (target === 'ru' || target === 'en') {
+    await loadDict(target);
+  }
+  i18n.lang = target;
   if (typeof document !== 'undefined') document.documentElement.lang = i18n.lang;
   try { localStorage.setItem('lang', i18n.lang); } catch { /* jim */ }
 }
@@ -40,17 +86,20 @@ function translate(core) {
     const n2 = norm(m[2]);
     if (n2 in dict) return m[1] + dict[n2] + m[3];
   }
-  for (const [re, fn] of patterns) {
-    const m = core.match(re);
-    if (m) return fn(...m.slice(1));
-    const mn = n.match(re);
-    if (mn) return fn(...mn.slice(1));
+  if (patterns && patterns.length) {
+    for (const [re, fn] of patterns) {
+      const m = core.match(re);
+      if (m) return fn(...m.slice(1));
+      const mn = n.match(re);
+      if (mn) return fn(...mn.slice(1));
+    }
   }
   return core;
 }
 
 export function t(s, params) {
   if (s === null || s === undefined) return '';
+  const _v = i18n.version; // reaktiv kuzatuvchi
   let out = String(s);
   if ((i18n.lang === 'ru' || i18n.lang === 'en') && out.trim()) {
     // Bosh/oxirdagi bo'sh joylar saqlanadi, ko'p qatorli matnda har bir qator alohida
@@ -79,14 +128,10 @@ export function translated(obj) {
 export const isRu = () => i18n.lang === 'ru';
 export const isEn = () => i18n.lang === 'en';
 
-// Tarix yozuvlari (server o'zbekcha yozadi): iboralarni so'z chegarasi bo'yicha almashtirish
-const W = "A-Za-zʻʼ'\\u2018\\u2019\\u02BB\\u02BC";
-const PHRASE_RE_RU = RU_PHRASES.map(([uz, ru]) => [new RegExp(`(^|[^${W}])${uz.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![${W}])`, 'g'), ru]);
-const PHRASE_RE_EN = EN_PHRASES.map(([uz, en]) => [new RegExp(`(^|[^${W}])${uz.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![${W}])`, 'g'), en]);
-
 export function tx(s) {
   if (!s || (i18n.lang !== 'ru' && i18n.lang !== 'en')) return s || '';
   const list = i18n.lang === 'ru' ? PHRASE_RE_RU : PHRASE_RE_EN;
+  if (!list || !list.length) return s || '';
   let out = String(s);
   for (const [re, rep] of list) out = out.replace(re, (m, pre) => pre + rep);
   return out;
